@@ -1,0 +1,57 @@
+@font-face {
+  font-family: Pxlvetica;
+  src: url(Pxlvetica-XymZ.ttf);
+}
+
+body {
+  background: #9ceb7d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  font-family: Pxlvetica, Arial, sans-serif;
+  color: #083005;
+  font-size: x-large;
+}
+
+a {
+  color: #083005;
+  text-decoration: underline wavy #bfffa5;
+}
+
+a:hover {
+  background-color: #bfffa5;
+  transition-duration: 0.5s;
+}
+
+.home {
+  position: absolute;
+  width: 50%;
+}
+
+.h-about {
+  position: fixed;
+  top: 3%;
+  left: 3%;
+}
+
+.h-shop {
+  position: fixed;
+  top: 3%;
+  right: 3%;
+}
+
+.h-instagram {
+  position: fixed;
+  bottom: 3%;
+  left: 3%;
+}
+
+.h-work {
+  position: fixed;
+  bottom: 3%;
+  right: 3%;
+}
