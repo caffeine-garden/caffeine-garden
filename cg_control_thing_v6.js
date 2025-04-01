@@ -1,58 +1,73 @@
-let panda;
-let bunny;
+let CREATURES;
+const CREATURE_SIZE = 100;
+let panda; // selene
+let bunny; // lucy
+let jellyfish; // julie
 
-let x = 620;
-let y = 240;
-
-let xp = 720;
-let yp = 240;
+let i;
+let active_creature;
 
 function preload() {
-  panda = loadImage('panda.svg');
-  bunny = loadImage('bunny.svg');
+  panda = loadImage("assets/panda.svg");
+  bunny = loadImage("assets/bunny.svg");
+  jellyfish = loadImage("assets/jellyfish.svg");
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  //background('#9CEB7D');
+  CREATURES = [panda, bunny, jellyfish];
+
+  // get the initial x-value for the leftmost creature
+  // use bitwise ~~ to truncate any decimals
+  x = ~~((windowWidth - CREATURE_SIZE * CREATURES.length) / 2);
+  y = ~~(windowHeight / 2);
+
+  // initialize creature coordinates
+  CREATURES.forEach((creature) => {
+    creature.type = creature.x = x;
+    creature.y = y;
+    x += CREATURE_SIZE;
+  });
+
+  // set active creature
+  i = 0;
+  active_creature = CREATURES[i];
 }
 
 function draw() {
-  background('#9CEB7D'); // putting background here, allows it to be added every time they move
-  
-  //circle(x, y, 80, 80);
-  
-  //circle(xp, yp, 80, 80);
-  
-  image(panda, x, y, 100, 100);
-  image(bunny, xp, yp, 100, 100);
-  fill('#9CEB7D');
-  stroke('#083005');
+  background("#9CEB7D"); // putting background here, allows it to be added every time they move
 
+  image(panda, panda.x, panda.y, CREATURE_SIZE, CREATURE_SIZE);
+  image(bunny, bunny.x, bunny.y, CREATURE_SIZE, CREATURE_SIZE);
+  image(jellyfish, jellyfish.x, jellyfish.y, CREATURE_SIZE, CREATURE_SIZE);
+  fill("#9CEB7D");
+  stroke("#083005");
+
+  // move active creature with WASD
   if (keyIsDown(65) === true) {
-    x -= 5;
+    // A key; go left
+    active_creature.x -= 5;
   }
   if (keyIsDown(68) === true) {
-    x += 5;
+    // D key; go right
+    active_creature.x += 5;
   }
   if (keyIsDown(87) === true) {
-    y -= 5;
+    // W key; go up
+    active_creature.y -= 5;
   }
   if (keyIsDown(83) === true) {
-    y += 5;
+    // S key; go down
+    active_creature.y += 5;
   }
-  
-  if (keyIsDown(37) === true) {
-    xp -= 5;
+
+  // switch between creatures using arrow keys
+  if (keyIsDown(RIGHT_ARROW) === true || keyIsDown(UP_ARROW) === true) {
+    prev_creature = active_creature;
+    i = (i + 1) % CREATURES.length;
+    active_creature = CREATURES[i];
   }
-  if (keyIsDown(39) === true) {
-    xp += 5;
+  if (keyIsDown(LEFT_ARROW) === true || keyIsDown(DOWN_ARROW) === true) {
+    // TODO
   }
-  if (keyIsDown(38) === true) {
-    yp -= 5;
-  }
-  if (keyIsDown(40) === true) {
-    yp += 5;
-  }
-   
 }
