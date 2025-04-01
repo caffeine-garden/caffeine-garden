@@ -6,11 +6,13 @@ let jellyfish; // julie
 
 let i;
 let active_creature;
+let blink = 0;
 
 function preload() {
   panda = loadImage("assets/panda.svg");
   bunny = loadImage("assets/bunny.svg");
   jellyfish = loadImage("assets/jellyfish.svg");
+  arrow = loadImage("assets/arrow.svg");
 }
 
 function setup() {
@@ -40,6 +42,19 @@ function draw() {
   image(panda, panda.x, panda.y, CREATURE_SIZE, CREATURE_SIZE);
   image(bunny, bunny.x, bunny.y, CREATURE_SIZE, CREATURE_SIZE);
   image(jellyfish, jellyfish.x, jellyfish.y, CREATURE_SIZE, CREATURE_SIZE);
+
+  const ARROW_SIZE = CREATURE_SIZE / 4;
+  blink++;
+  if (blink % 50 > 10) {
+    image(
+      arrow,
+      active_creature.x + (CREATURE_SIZE - ARROW_SIZE) / 2,
+      active_creature.y - ARROW_SIZE * 1.5,
+      ARROW_SIZE,
+      ARROW_SIZE
+    );
+  }
+
   fill("#9CEB7D");
   stroke("#083005");
 
@@ -78,4 +93,6 @@ function keyReleased() {
     active_creature = CREATURES[i];
     console.log(i);
   }
+
+  return false;
 }
