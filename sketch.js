@@ -26,7 +26,7 @@ function setup() {
 
   // initialize creature coordinates
   CREATURES.forEach((creature) => {
-    creature.type = creature.x = x;
+    creature.x = x;
     creature.y = y;
     x += CREATURE_SIZE;
   });
