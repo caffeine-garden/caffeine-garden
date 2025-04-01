@@ -74,6 +74,20 @@ function draw() {
     // S key; go down
     active_creature.y += 5;
   }
+
+  // keep creatures within the bounds of the screen
+  if (active_creature.x < 0 - CREATURE_SIZE) {
+    active_creature.x = windowWidth + CREATURE_SIZE;
+  }
+  if (active_creature.x > windowWidth + CREATURE_SIZE) {
+    active_creature.x = 0 - CREATURE_SIZE;
+  }
+  if (active_creature.y < 0 - CREATURE_SIZE) {
+    active_creature.y = windowHeight + CREATURE_SIZE;
+  }
+  if (active_creature.y > windowHeight + CREATURE_SIZE) {
+    active_creature.y = 0 - CREATURE_SIZE;
+  }
 }
 
 // switch between creatures using arrow keys
