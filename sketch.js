@@ -43,7 +43,7 @@ function draw() {
   fill("#9CEB7D");
   stroke("#083005");
 
-  // move active creature with WASD
+  // move the active creature with WASD
   if (keyIsDown(65) === true) {
     // A key; go left
     active_creature.x -= 5;
@@ -60,14 +60,22 @@ function draw() {
     // S key; go down
     active_creature.y += 5;
   }
+}
 
-  // switch between creatures using arrow keys
-  if (keyIsDown(RIGHT_ARROW) === true || keyIsDown(UP_ARROW) === true) {
-    prev_creature = active_creature;
+// switch between creatures using arrow keys
+function keyReleased() {
+  if (key === "ArrowRight" || key === "ArrowUp") {
     i = (i + 1) % CREATURES.length;
     active_creature = CREATURES[i];
+    console.log(i);
   }
-  if (keyIsDown(LEFT_ARROW) === true || keyIsDown(DOWN_ARROW) === true) {
-    // TODO
+  if (key === "ArrowLeft" || key === "ArrowDown") {
+    if (i === 0) {
+      i = CREATURES.length - 1;
+    } else {
+      i = (i - 1) % CREATURES.length;
+    }
+    active_creature = CREATURES[i];
+    console.log(i);
   }
 }
