@@ -1,11 +1,10 @@
 let CREATURES;
 const CREATURE_SIZE = 100;
+let activeCreature;
 let panda; // selene
 let bunny; // lucy
 let jellyfish; // julie
-
-let i;
-let active_creature;
+const ARROW_SIZE = CREATURE_SIZE / 4;
 let blink = 0;
 
 function preload() {
@@ -17,41 +16,76 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  CREATURES = [panda, bunny, jellyfish];
+  CREATURES = new Map([
+    ["panda", panda],
+    ["bunny", bunny],
+    ["jellyfish", jellyfish],
+  ]);
 
-  // get the initial x-value for the leftmost creature
-  // use bitwise ~~ to truncate any decimals
-  x = ~~((windowWidth - CREATURE_SIZE * CREATURES.length) / 2);
-  y = ~~(windowHeight / 2 - CREATURE_SIZE * 2);
+  let firstTime = localStorage.getItem("firstTime");
+  if (!firstTime) {
+    // first time loaded! initialize creature coordinates.
+    // otherwise, get coordinates from local storage
+    localStorage.setItem("firstTime", "1");
 
-  // initialize creature coordinates
-  CREATURES.forEach((creature) => {
-    creature.x = x;
-    creature.y = y;
-    x += CREATURE_SIZE;
-  });
+    // use bitwise ~~ to truncate any decimals
+    let x = ~~((windowWidth - CREATURE_SIZE * CREATURES.size) / 2);
+    let y = ~~(windowHeight / 2 - CREATURE_SIZE * 2);
 
-  // set active creature
-  i = 0;
-  active_creature = CREATURES[i];
+    // starting creature coordinates
+    CREATURES.forEach((_, creatureName) => {
+      storeItem(creatureName + "X", x);
+      storeItem(creatureName + "Y", y);
+      x += CREATURE_SIZE;
+    });
+
+    // this index is used to determine the active creature
+    storeItem("i", 0);
+  }
 }
 
 function draw() {
-  background("#9CEB7D"); // putting background here, allows it to be added every time they move
+  background("#9CEB7D");
   fill("#9CEB7D");
   stroke("#083005");
 
-  image(panda, panda.x, panda.y, CREATURE_SIZE, CREATURE_SIZE);
-  image(bunny, bunny.x, bunny.y, CREATURE_SIZE, CREATURE_SIZE);
-  image(jellyfish, jellyfish.x, jellyfish.y, CREATURE_SIZE, CREATURE_SIZE);
+  // draw creatures
+  image(
+    panda,
+    getItem("pandaX"),
+    getItem("pandaY"),
+    CREATURE_SIZE,
+    CREATURE_SIZE
+  );
+  image(
+    bunny,
+    getItem("bunnyX"),
+    getItem("bunnyY"),
+    CREATURE_SIZE,
+    CREATURE_SIZE
+  );
+  image(
+    jellyfish,
+    getItem("jellyfishX"),
+    getItem("jellyfishY"),
+    CREATURE_SIZE,
+    CREATURE_SIZE
+  );
 
-  const ARROW_SIZE = CREATURE_SIZE / 4;
+  // load active creature from local storage
+  let i = getItem("i");
+  const activeCreatureName = [...CREATURES.keys()][i];
+  activeCreature = CREATURES.get(activeCreatureName);
+  activeCreature.x = getItem(activeCreatureName + "X");
+  activeCreature.y = getItem(activeCreatureName + "Y");
+
+  // draw blinking arrow to highlight the active creature
   blink++;
   if (blink % 50 > 10) {
     image(
       arrow,
-      active_creature.x + (CREATURE_SIZE - ARROW_SIZE) / 2,
-      active_creature.y - ARROW_SIZE * 1.5,
+      activeCreature.x + (CREATURE_SIZE - ARROW_SIZE) / 2,
+      activeCreature.y - ARROW_SIZE * 1.5,
       ARROW_SIZE,
       ARROW_SIZE
     );
@@ -60,51 +94,66 @@ function draw() {
   // move the active creature with WASD
   if (keyIsDown(65) === true) {
     // A key; go left
-    active_creature.x -= 5;
+    activeCreature.x -= 5;
+    storeItem(activeCreatureName + "X", activeCreature.x);
   }
   if (keyIsDown(68) === true) {
     // D key; go right
-    active_creature.x += 5;
+    activeCreature.x += 5;
+    storeItem(activeCreatureName + "X", activeCreature.x);
   }
   if (keyIsDown(87) === true) {
     // W key; go up
-    active_creature.y -= 5;
+    activeCreature.y -= 5;
+    storeItem(activeCreatureName + "Y", activeCreature.y);
   }
   if (keyIsDown(83) === true) {
     // S key; go down
-    active_creature.y += 5;
+    activeCreature.y += 5;
+    storeItem(activeCreatureName + "Y", activeCreature.y);
   }
 
   // keep creatures within the bounds of the screen
-  if (active_creature.x < 0 - CREATURE_SIZE) {
-    active_creature.x = windowWidth + CREATURE_SIZE;
+  if (activeCreature.x < 0 - CREATURE_SIZE) {
+    activeCreature.x = windowWidth + CREATURE_SIZE;
+    storeItem(activeCreatureName + "X", activeCreature.x);
   }
-  if (active_creature.x > windowWidth + CREATURE_SIZE) {
-    active_creature.x = 0 - CREATURE_SIZE;
+  if (activeCreature.x > windowWidth + CREATURE_SIZE) {
+    activeCreature.x = 0 - CREATURE_SIZE;
+    storeItem(activeCreatureName + "X", activeCreature.x);
   }
-  if (active_creature.y < 0 - CREATURE_SIZE) {
-    active_creature.y = windowHeight + CREATURE_SIZE;
+  if (activeCreature.y < 0 - CREATURE_SIZE) {
+    activeCreature.y = windowHeight + CREATURE_SIZE;
+    storeItem(activeCreatureName + "Y", activeCreature.y);
   }
-  if (active_creature.y > windowHeight + CREATURE_SIZE) {
-    active_creature.y = 0 - CREATURE_SIZE;
+  if (activeCreature.y > windowHeight + CREATURE_SIZE) {
+    activeCreature.y = 0 - CREATURE_SIZE;
+    storeItem(activeCreatureName + "Y", activeCreature.y);
   }
 }
 
 // switch between creatures using arrow keys
 function keyReleased() {
+  let i = getItem("i");
+
+  // toggle forwards
   if (key === "ArrowRight" || key === "ArrowUp") {
-    i = (i + 1) % CREATURES.length;
-    active_creature = CREATURES[i];
-    console.log(i);
+    i = (i + 1) % CREATURES.size;
+    storeItem("i", i);
+    const activeCreatureName = [...CREATURES.keys()][i];
+    activeCreature = CREATURES.get(activeCreatureName);
   }
+
+  // toggle backwards
   if (key === "ArrowLeft" || key === "ArrowDown") {
     if (i === 0) {
-      i = CREATURES.length - 1;
+      i = CREATURES.size - 1;
     } else {
-      i = (i - 1) % CREATURES.length;
+      i = (i - 1) % CREATURES.size;
     }
-    active_creature = CREATURES[i];
-    console.log(i);
+    storeItem("i", i);
+    const activeCreatureName = [...CREATURES.keys()][i];
+    activeCreature = CREATURES.get(activeCreatureName);
   }
 
   return false;
