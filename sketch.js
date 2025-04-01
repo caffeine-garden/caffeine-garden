@@ -22,7 +22,7 @@ function setup() {
   // get the initial x-value for the leftmost creature
   // use bitwise ~~ to truncate any decimals
   x = ~~((windowWidth - CREATURE_SIZE * CREATURES.length) / 2);
-  y = ~~(windowHeight / 2);
+  y = ~~(windowHeight / 2 - CREATURE_SIZE * 2);
 
   // initialize creature coordinates
   CREATURES.forEach((creature) => {
@@ -38,6 +38,8 @@ function setup() {
 
 function draw() {
   background("#9CEB7D"); // putting background here, allows it to be added every time they move
+  fill("#9CEB7D");
+  stroke("#083005");
 
   image(panda, panda.x, panda.y, CREATURE_SIZE, CREATURE_SIZE);
   image(bunny, bunny.x, bunny.y, CREATURE_SIZE, CREATURE_SIZE);
@@ -54,9 +56,6 @@ function draw() {
       ARROW_SIZE
     );
   }
-
-  fill("#9CEB7D");
-  stroke("#083005");
 
   // move the active creature with WASD
   if (keyIsDown(65) === true) {
