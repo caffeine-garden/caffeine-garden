@@ -22,6 +22,9 @@ function setup() {
     ["jellyfish", jellyfish],
   ]);
 
+  let x;
+  let y;
+
   let firstTime = localStorage.getItem("firstTime");
   if (!firstTime) {
     // first time loaded! initialize creature coordinates.
@@ -29,8 +32,15 @@ function setup() {
     localStorage.setItem("firstTime", "1");
 
     // use bitwise ~~ to truncate any decimals
-    let x = ~~((windowWidth - CREATURE_SIZE * CREATURES.size) / 2);
-    let y = ~~(windowHeight / 2 - CREATURE_SIZE * 2);
+    if (windowWidth > 750) {
+      // draw canvas for larger screens
+      x = ~~((windowWidth - CREATURE_SIZE * CREATURES.size) / 2);
+      y = ~~(windowHeight / 2 - CREATURE_SIZE * 2);
+    } else {
+      // draw canvas for smaller screens
+      x = ~~((windowWidth - CREATURE_SIZE * CREATURES.size) / 2);
+      y = ~~(0.75 * CREATURE_SIZE);
+    }
 
     // starting creature coordinates
     CREATURES.forEach((_, creatureName) => {

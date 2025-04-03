@@ -28,31 +28,57 @@ a:hover {
   transition-duration: 0.5s;
 }
 
-.home {
+.h {
+  position: absolute;
+}
+
+#home {
   position: absolute;
   width: 50%;
 }
 
-.h-about {
-  position: fixed;
-  top: 3%;
+#about {
+  bottom: 95%;
   left: 3%;
 }
 
-.h-shop {
-  position: fixed;
-  top: 3%;
+#shop {
+  bottom: 95%;
   right: 3%;
 }
 
-.h-instagram {
-  position: fixed;
+#instagram {
   bottom: 3%;
   left: 3%;
 }
 
-.h-work {
-  position: fixed;
+#work {
   bottom: 3%;
   right: 3%;
+}
+
+@media only screen and (max-width: 750px) {
+  #about {
+    left: 50%;
+    transform: translate(-50%, 0);
+    bottom: 21%;
+  }
+
+  #shop {
+    left: 50%;
+    transform: translate(-50%, 0);
+    bottom: 16%;
+  }
+
+  #instagram {
+    left: 50%;
+    transform: translate(-50%, 0);
+    bottom: 11%;
+  }
+
+  #work {
+    left: 50%;
+    transform: translate(-50%, 0);
+    bottom: 1%;
+  }
 }
