@@ -15,6 +15,7 @@ body {
   font-family: Pxlvetica, Arial, sans-serif;
   color: #083005;
   font-size: x-large;
+  overflow: hidden;
 }
 
 a {
