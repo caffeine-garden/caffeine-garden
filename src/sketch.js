@@ -64,8 +64,10 @@ function setup() {
     const mainContentTop = document
       .querySelector("#main-content")
       .getBoundingClientRect().top;
+    // position creatures closer to text on shorter screens (landscape mobile)
+    const shortScreenMultiplier = windowHeight < 500 ? 0.4 : 0;
     x = (windowWidth - CREATURE_SIZE * CREATURES.size) / 2;
-    y = mainContentTop - CREATURE_SIZE * 1.5;
+    y = mainContentTop - CREATURE_SIZE * (1.5 - shortScreenMultiplier);
 
     // store starting creature coordinates in localStorage
     CREATURES.forEach((_, creatureName) => {
@@ -213,7 +215,9 @@ function windowResized() {
 
 function touchStarted(event) {
   if (event.type === "touchstart") {
-    document.querySelector(".desktop-only").remove();
+    if (document.querySelector(".desktop-only")) {
+      document.querySelector(".desktop-only").remove();
+    }
     document.querySelector(".mobile-only").style.display = "block";
     for (let touch of touches) {
       touchTarget = {
