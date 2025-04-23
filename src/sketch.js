@@ -7,11 +7,15 @@
  *
  *    let's say you want to add a worm.
  *    there are two steps:
+ *
  * 1. define your worm above "let activeCreature;"
+ *
  *    eg:
  *        let worm; // your_name
+ *
  * 2. load your worm image above "arrow = loadImage("/assets/arrow.svg");"
  *    please make sure worm.svg exists in the assets folder.
+ *
  *    eg:
  *        worm = loadImage("/assets/worm.svg");
  *
@@ -27,7 +31,6 @@ let bunny; // lucy
 let jellyfish; // julie
 /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 1: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
 let activeCreature;
-let activeCreatureName = "";
 const CREATURES = new Map();
 const CREATURE_SIZE = 100;
 const ARROW_SIZE = CREATURE_SIZE / 4;
@@ -94,7 +97,7 @@ function draw() {
 
   // load active creature from localStorage
   let i = getItem("activeCreatureIndex");
-  activeCreatureName = [...CREATURES.keys()][i];
+  const activeCreatureName = [...CREATURES.keys()][i];
   activeCreature = CREATURES.get(activeCreatureName);
   activeCreature.x = getItem(activeCreatureName + "X");
   activeCreature.y = getItem(activeCreatureName + "Y");
@@ -195,8 +198,6 @@ function keyReleased() {
     const activeCreatureName = [...CREATURES.keys()][i];
     activeCreature = CREATURES.get(activeCreatureName);
   }
-
-  return false;
 }
 
 // reset creature position when window size changes
@@ -210,12 +211,16 @@ function windowResized() {
  * THE CODE BELOW TRACKS TOUCHSCREEN INTERACTIONS
  */
 
-function touchStarted() {
-  for (let touch of touches) {
-    touchTarget = {
-      x: touch.x - CREATURE_SIZE / 2,
-      y: touch.y - CREATURE_SIZE / 2,
-    };
+function touchStarted(event) {
+  if (event.type === "touchstart") {
+    document.querySelector(".desktop-only").remove();
+    document.querySelector(".mobile-only").style.display = "block";
+    for (let touch of touches) {
+      touchTarget = {
+        x: touch.x - CREATURE_SIZE / 2,
+        y: touch.y - CREATURE_SIZE / 2,
+      };
+    }
   }
 }
 
@@ -230,4 +235,13 @@ function touchMoved() {
 
 function touchEnded() {
   touchTarget = null;
+}
+
+// switch between creatures by shaking device
+function deviceShaken() {
+  let i = getItem("activeCreatureIndex");
+  i = (i + 1) % CREATURES.size;
+  storeItem("activeCreatureIndex", i);
+  const activeCreatureName = [...CREATURES.keys()][i];
+  activeCreature = CREATURES.get(activeCreatureName);
 }

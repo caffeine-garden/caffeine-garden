@@ -1,6 +1,6 @@
 @font-face {
   font-family: Pxlvetica;
-  src: url(assets/Pxlvetica-XymZ.ttf);
+  src: url(/assets/Pxlvetica-XymZ.ttf);
 }
 
 body {
@@ -16,6 +16,14 @@ body {
   color: #083005;
   font-size: x-large;
   overflow: hidden;
+}
+
+p.desktop-only {
+  display: block;
+}
+
+p.mobile-only {
+  display: none;
 }
 
 a {
@@ -58,6 +66,14 @@ a:hover {
 }
 
 @media only screen and (max-width: 750px) {
+  p.desktop-only {
+    display: none;
+  }
+
+  p.mobile-only {
+    display: block;
+  }
+
   #about {
     left: 50%;
     transform: translate(-50%, 0);
