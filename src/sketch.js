@@ -27,10 +27,12 @@ let bunny; // lucy
 let jellyfish; // julie
 /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 1: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
 let activeCreature;
+let activeCreatureName = "";
 const CREATURES = new Map();
 const CREATURE_SIZE = 100;
 const ARROW_SIZE = CREATURE_SIZE / 4;
 let blink = 0;
+let touchTarget = null; // for touchscreens
 
 function preload() {
   panda = loadImage("/assets/panda.svg");
@@ -92,7 +94,7 @@ function draw() {
 
   // load active creature from localStorage
   let i = getItem("activeCreatureIndex");
-  const activeCreatureName = [...CREATURES.keys()][i];
+  activeCreatureName = [...CREATURES.keys()][i];
   activeCreature = CREATURES.get(activeCreatureName);
   activeCreature.x = getItem(activeCreatureName + "X");
   activeCreature.y = getItem(activeCreatureName + "Y");
@@ -129,6 +131,26 @@ function draw() {
     // S key; go down
     activeCreature.y += 5;
     storeItem(activeCreatureName + "Y", activeCreature.y);
+  }
+
+  // move the active creature by tapping a touchscreen
+  if (touchTarget) {
+    if (activeCreature.x > touchTarget.x) {
+      activeCreature.x -= 5;
+      storeItem(activeCreatureName + "X", activeCreature.x);
+    }
+    if (activeCreature.x < touchTarget.x) {
+      activeCreature.x += 5;
+      storeItem(activeCreatureName + "X", activeCreature.x);
+    }
+    if (activeCreature.y > touchTarget.y) {
+      activeCreature.y -= 5;
+      storeItem(activeCreatureName + "Y", activeCreature.y);
+    }
+    if (activeCreature.y < touchTarget.y) {
+      activeCreature.y += 5;
+      storeItem(activeCreatureName + "Y", activeCreature.y);
+    }
   }
 
   // keep creatures within the bounds of the screen
@@ -182,4 +204,30 @@ function windowResized() {
   localStorage.clear();
   setup();
   resizeCanvas(windowWidth, windowHeight);
+}
+
+/**
+ * THE CODE BELOW TRACKS TOUCHSCREEN INTERACTIONS
+ */
+
+function touchStarted() {
+  for (let touch of touches) {
+    touchTarget = {
+      x: touch.x - CREATURE_SIZE / 2,
+      y: touch.y - CREATURE_SIZE / 2,
+    };
+  }
+}
+
+function touchMoved() {
+  for (let touch of touches) {
+    touchTarget = {
+      x: touch.x - CREATURE_SIZE / 2,
+      y: touch.y - CREATURE_SIZE / 2,
+    };
+  }
+}
+
+function touchEnded() {
+  touchTarget = null;
 }
