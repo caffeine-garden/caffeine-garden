@@ -10,10 +10,10 @@
  * 1. define your worm above "let activeCreature;"
  *    eg:
  *        let worm; // your_name
- * 2. load your worm image above "arrow = loadImage("assets/arrow.svg");"
+ * 2. load your worm image above "arrow = loadImage("/assets/arrow.svg");"
  *    please make sure worm.svg exists in the assets folder.
  *    eg:
- *        worm = loadImage("assets/worm.svg");
+ *        worm = loadImage("/assets/worm.svg");
  *
  * 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧
  * 𖡼.𖤣𖥧𖡼 AND THAT'S ALL 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.
@@ -33,11 +33,11 @@ const ARROW_SIZE = CREATURE_SIZE / 4;
 let blink = 0;
 
 function preload() {
-  panda = loadImage("assets/panda.svg");
-  bunny = loadImage("assets/bunny.svg");
-  jellyfish = loadImage("assets/jellyfish.svg");
+  panda = loadImage("/assets/panda.svg");
+  bunny = loadImage("/assets/bunny.svg");
+  jellyfish = loadImage("/assets/jellyfish.svg");
   /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 2: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
-  arrow = loadImage("assets/arrow.svg");
+  arrow = loadImage("/assets/arrow.svg");
 }
 
 function setup() {
