@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="a little garden open past midnight." />
+    <title>caffeine.garden</title>
+    <link rel="icon" href="{{ '../assets/panda.svg' }}" type="image/x-icon" />
+    <link rel="stylesheet" href="{{ '../style.css' }}" />
+    <script
+      language="javascript"
+      type="text/javascript"
+      src="{{ '../p5.min.js' }}"
+    ></script>
+    <script
+      language="javascript"
+      type="text/javascript"
+      src="{{ '../sketch.js' }}"
+    ></script>
+  </head>
+
+  <body>
+    <div id="main-content">
+        <a href="/">caffeine.garden</a>
+        {{ content | safe }}
+    </div>
+    <div class="h" id="about">
+      <a href="/about">about</a>
+    </div>
+    <div class="h" id="instagram">
+      <a href="https://www.instagram.com/caffeine.garden/">instagram</a>
+    </div>
+    <div class="h" id="shop">
+      <a href="/shop">coming soon</a>
+    </div>
+    <div class="h" id="work">
+      <a href="https://github.com/caffeine-garden/caffeine-garden"
+        >see work (under construction)</a
+      >
+    </div>
+  </body>
+
+</html>
