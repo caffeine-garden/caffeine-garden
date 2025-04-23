@@ -1,8 +1,33 @@
+/**
+ * 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧
+ * 𖡼.𖤣𖥧𖡼.𖤣𖥧 ᕱᕱ ྀི HELLO !!! ₍^. .^₎⟆ ₊˚⊹♡ 𖡼.𖤣𖥧𖡼.𖤣𖥧
+ * 𖡼.𖤣𖥧𖡼 PLEASE FOLLOW THE FLOWERS 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.
+ * 𖡼.𖤣𖥧𖡼.𖤣𖥧 TO ADD YOUR CREATURE TO THE SITE 𖡼.𖤣
+ * 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼
+ *
+ *    let's say you want to add a worm.
+ *    there are two steps:
+ * 1. define your worm above "let activeCreature;"
+ *    eg:
+ *        let worm; // your_name
+ * 2. load your worm image above "arrow = loadImage("assets/arrow.svg");"
+ *    please make sure worm.svg exists in the assets folder.
+ *    eg:
+ *        worm = loadImage("assets/worm.svg");
+ *
+ * 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧
+ * 𖡼.𖤣𖥧𖡼 AND THAT'S ALL 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.
+ * 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧 LOVE, 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧
+ * 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼 JELLYFISH 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.
+ * 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧
+ */
+
 let panda; // selene
 let bunny; // lucy
 let jellyfish; // julie
+/** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 1: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
 let activeCreature;
-let CREATURES = new Map();
+const CREATURES = new Map();
 const CREATURE_SIZE = 100;
 const ARROW_SIZE = CREATURE_SIZE / 4;
 let blink = 0;
@@ -11,6 +36,7 @@ function preload() {
   panda = loadImage("assets/panda.svg");
   bunny = loadImage("assets/bunny.svg");
   jellyfish = loadImage("assets/jellyfish.svg");
+  /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 2: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
   arrow = loadImage("assets/arrow.svg");
 }
 
@@ -27,7 +53,7 @@ function setup() {
   let firstTime = localStorage.getItem("firstTime");
   if (!firstTime) {
     // first time loaded! initialize creature coordinates.
-    // otherwise, get coordinates from local storage
+    // otherwise, get coordinates from localStorage
     localStorage.setItem("firstTime", "1");
 
     const mainContentTop = document
@@ -54,29 +80,17 @@ function draw() {
   stroke("#083005");
 
   // draw creatures
-  image(
-    panda,
-    getItem("pandaX"),
-    getItem("pandaY"),
-    CREATURE_SIZE,
-    CREATURE_SIZE
-  );
-  image(
-    bunny,
-    getItem("bunnyX"),
-    getItem("bunnyY"),
-    CREATURE_SIZE,
-    CREATURE_SIZE
-  );
-  image(
-    jellyfish,
-    getItem("jellyfishX"),
-    getItem("jellyfishY"),
-    CREATURE_SIZE,
-    CREATURE_SIZE
-  );
+  CREATURES.forEach((creature, creatureName) => {
+    image(
+      creature,
+      getItem(creatureName + "X"),
+      getItem(creatureName + "Y"),
+      CREATURE_SIZE,
+      CREATURE_SIZE
+    );
+  });
 
-  // load active creature from local storage
+  // load active creature from localStorage
   let i = getItem("activeCreatureIndex");
   const activeCreatureName = [...CREATURES.keys()][i];
   activeCreature = CREATURES.get(activeCreatureName);
