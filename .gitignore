@@ -1,0 +1,5 @@
+# ignore installed npm modules
+node_modules/
+
+# ignore eleventy build output
+_site

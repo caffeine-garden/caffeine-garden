@@ -1,0 +1,23 @@
+{
+  "name": "caffeine-garden",
+  "version": "1.0.0",
+  "description": "a little garden open past midnight.",
+  "main": "index.html",
+  "scripts": {
+    "start": "eleventy --serve",
+    "build": "eleventy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/caffeine-garden/caffeine-garden.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/caffeine-garden/caffeine-garden/issues"
+  },
+  "homepage": "https://github.com/caffeine-garden/caffeine-garden#readme",
+  "dependencies": {
+    "@11ty/eleventy": "^3.0.0"
+  }
+}
