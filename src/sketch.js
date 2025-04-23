@@ -1,9 +1,14 @@
-let CREATURES;
-const CREATURE_SIZE = 100;
-let activeCreature;
 let panda; // selene
 let bunny; // lucy
 let jellyfish; // julie
+let activeCreature;
+let CREATURES = new Map();
+[
+  ["panda", panda],
+  ["bunny", bunny],
+  ["jellyfish", jellyfish],
+];
+const CREATURE_SIZE = 100;
 const ARROW_SIZE = CREATURE_SIZE / 4;
 let blink = 0;
 
@@ -16,11 +21,10 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  CREATURES = new Map([
-    ["panda", panda],
-    ["bunny", bunny],
-    ["jellyfish", jellyfish],
-  ]);
+
+  CREATURES.set("panda", panda);
+  CREATURES.set("bunny", bunny);
+  CREATURES.set("jellyfish", jellyfish);
 
   let x;
   let y;
@@ -31,16 +35,11 @@ function setup() {
     // otherwise, get coordinates from local storage
     localStorage.setItem("firstTime", "1");
 
-    // use bitwise ~~ to truncate any decimals
-    if (windowWidth > 750) {
-      // draw canvas for larger screens
-      x = ~~((windowWidth - CREATURE_SIZE * CREATURES.size) / 2);
-      y = ~~(windowHeight / 2 - CREATURE_SIZE * 2);
-    } else {
-      // draw canvas for smaller screens
-      x = ~~((windowWidth - CREATURE_SIZE * CREATURES.size) / 2);
-      y = ~~(0.75 * CREATURE_SIZE);
-    }
+    const mainContentTop = document
+      .querySelector("#main-content")
+      .getBoundingClientRect().top;
+    x = (windowWidth - CREATURE_SIZE * CREATURES.size) / 2;
+    y = mainContentTop - CREATURE_SIZE * 1.5;
 
     // starting creature coordinates
     CREATURES.forEach((_, creatureName) => {
