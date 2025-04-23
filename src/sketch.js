@@ -3,11 +3,6 @@ let bunny; // lucy
 let jellyfish; // julie
 let activeCreature;
 let CREATURES = new Map();
-[
-  ["panda", panda],
-  ["bunny", bunny],
-  ["jellyfish", jellyfish],
-];
 const CREATURE_SIZE = 100;
 const ARROW_SIZE = CREATURE_SIZE / 4;
 let blink = 0;
@@ -41,15 +36,15 @@ function setup() {
     x = (windowWidth - CREATURE_SIZE * CREATURES.size) / 2;
     y = mainContentTop - CREATURE_SIZE * 1.5;
 
-    // starting creature coordinates
+    // store starting creature coordinates in localStorage
     CREATURES.forEach((_, creatureName) => {
       storeItem(creatureName + "X", x);
       storeItem(creatureName + "Y", y);
       x += CREATURE_SIZE;
     });
 
-    // this index is used to determine the active creature
-    storeItem("i", 0);
+    // the intial active creature is at index 0
+    storeItem("activeCreatureIndex", 0);
   }
 }
 
@@ -82,7 +77,7 @@ function draw() {
   );
 
   // load active creature from local storage
-  let i = getItem("i");
+  let i = getItem("activeCreatureIndex");
   const activeCreatureName = [...CREATURES.keys()][i];
   activeCreature = CREATURES.get(activeCreatureName);
   activeCreature.x = getItem(activeCreatureName + "X");
@@ -143,12 +138,12 @@ function draw() {
 
 // switch between creatures using arrow keys
 function keyReleased() {
-  let i = getItem("i");
+  let i = getItem("activeCreatureIndex");
 
   // toggle forwards
   if (key === "ArrowRight" || key === "ArrowUp") {
     i = (i + 1) % CREATURES.size;
-    storeItem("i", i);
+    storeItem("activeCreatureIndex", i);
     const activeCreatureName = [...CREATURES.keys()][i];
     activeCreature = CREATURES.get(activeCreatureName);
   }
@@ -160,7 +155,7 @@ function keyReleased() {
     } else {
       i = (i - 1) % CREATURES.size;
     }
-    storeItem("i", i);
+    storeItem("activeCreatureIndex", i);
     const activeCreatureName = [...CREATURES.keys()][i];
     activeCreature = CREATURES.get(activeCreatureName);
   }
