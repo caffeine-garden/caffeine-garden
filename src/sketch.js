@@ -176,3 +176,10 @@ function keyReleased() {
 
   return false;
 }
+
+// reset creature position when window size changes
+function windowResized() {
+  localStorage.clear();
+  setup();
+  resizeCanvas(windowWidth, windowHeight);
+}
