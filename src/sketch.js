@@ -34,7 +34,7 @@ let activeCreature;
 const CREATURES = new Map();
 const CREATURE_SIZE = 100;
 const ARROW_SIZE = CREATURE_SIZE / 4;
-let blink = 0;
+let blink = 0; // for arrow blinking
 let touchTarget = null; // for touchscreens
 
 function preload() {
@@ -81,6 +81,30 @@ function setup() {
   }
 }
 
+// returns the p5 image for the current active creature by inspecting localStorage
+// also returns the name of the current active creature
+// should not be called prior to storing activeCreatureIndex in setup()
+function getActiveCreature() {
+  let activeCreatureIndex = getItem("activeCreatureIndex");
+  if (!activeCreatureIndex) {
+    storeItem("activeCreatureIndex", 0);
+    activeCreatureIndex = 0;
+  }
+  const activeCreatureName = [...CREATURES.keys()][activeCreatureIndex];
+  activeCreature = CREATURES.get(activeCreatureName);
+  return activeCreature, activeCreatureName;
+}
+
+function setActiveCreature(activeCreatureIndex) {
+  if (activeCreatureIndex == null) {
+    throw new Error("Please specify an activeCreatureIndex!!!");
+  }
+  storeItem("activeCreatureIndex", activeCreatureIndex);
+  const activeCreatureName = [...CREATURES.keys()][activeCreatureIndex];
+  activeCreature = CREATURES.get(activeCreatureName);
+  return activeCreature;
+}
+
 function draw() {
   background("#9CEB7D");
   fill("#9CEB7D");
@@ -97,10 +121,7 @@ function draw() {
     );
   });
 
-  // load active creature from localStorage
-  let i = getItem("activeCreatureIndex");
-  const activeCreatureName = [...CREATURES.keys()][i];
-  activeCreature = CREATURES.get(activeCreatureName);
+  activeCreature, (activeCreatureName = getActiveCreature());
   activeCreature.x = getItem(activeCreatureName + "X");
   activeCreature.y = getItem(activeCreatureName + "Y");
 
@@ -184,9 +205,7 @@ function keyReleased() {
   // toggle forwards
   if (key === "ArrowRight" || key === "ArrowUp") {
     i = (i + 1) % CREATURES.size;
-    storeItem("activeCreatureIndex", i);
-    const activeCreatureName = [...CREATURES.keys()][i];
-    activeCreature = CREATURES.get(activeCreatureName);
+    setActiveCreature(i);
   }
 
   // toggle backwards
@@ -196,9 +215,7 @@ function keyReleased() {
     } else {
       i = (i - 1) % CREATURES.size;
     }
-    storeItem("activeCreatureIndex", i);
-    const activeCreatureName = [...CREATURES.keys()][i];
-    activeCreature = CREATURES.get(activeCreatureName);
+    setActiveCreature(i);
   }
 }
 
@@ -242,10 +259,9 @@ function touchEnded() {
 }
 
 // switch between creatures by shaking device
+// TODO FIX OR CHANGE THIS
 function deviceShaken() {
   let i = getItem("activeCreatureIndex");
   i = (i + 1) % CREATURES.size;
-  storeItem("activeCreatureIndex", i);
-  const activeCreatureName = [...CREATURES.keys()][i];
-  activeCreature = CREATURES.get(activeCreatureName);
+  setActiveCreature(i);
 }
