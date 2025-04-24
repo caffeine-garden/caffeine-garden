@@ -6,7 +6,7 @@
  * 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼
  *
  *    let's say you want to add a worm.
- *    there are two steps:
+ *    there are three steps:
  *
  * 1. define your worm above "let activeCreature;"
  *
@@ -18,6 +18,11 @@
  *
  *    eg:
  *        worm = loadImage("/assets/worm.svg");
+ *
+ * 3. add your worm to CREATURES in the setup() function
+ *
+ *    eg:
+ *        CREATURES.set("worm", worm);
  *
  * 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧
  * 𖡼.𖤣𖥧𖡼 AND THAT'S ALL 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.
@@ -51,6 +56,7 @@ function setup() {
   CREATURES.set("panda", panda);
   CREATURES.set("bunny", bunny);
   CREATURES.set("jellyfish", jellyfish);
+  /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 3: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
 
   let x;
   let y;
