@@ -12,17 +12,29 @@ body {
 }
 
 main {
-  margin: auto;
+  margin: 0 auto;
 }
 
 nav {
 }
 
+/* responsive nav without media queries - inspired by this tutorial
+https://css-tricks.com/responsive-layouts-fewer-media-queries/#aa-control-when-the-items-wrap 
+*/
 nav ul {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(clamp(100%/ (4 + 1) + 0.1%, (100% - 500px) * 1000, 100%), 1fr)
+  );
+  margin: 0;
+  padding: 0;
+  gap: 0.5em;
+  list-style: none;
 }
 
 nav li {
-  list-style: none;
+  background: red;
 }
 
 .icon {
