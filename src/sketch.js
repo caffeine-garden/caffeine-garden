@@ -67,6 +67,7 @@ function setup() {
     // otherwise, get coordinates from localStorage
     localStorage.setItem("firstTime", "1");
 
+    // TODO FIX
     const mainContentTop = document
       .querySelector("#main-content")
       .getBoundingClientRect().top;
@@ -74,6 +75,7 @@ function setup() {
     const shortScreenMultiplier = windowHeight < 500 ? 0.4 : 0;
     x = (windowWidth - CREATURE_SIZE * CREATURES.size) / 2;
     y = mainContentTop - CREATURE_SIZE * (1.5 - shortScreenMultiplier);
+    // y = 100 - CREATURE_SIZE * (1.5 - shortScreenMultiplier);
 
     // store starting creature coordinates in localStorage
     CREATURES.forEach((_, creatureName) => {
@@ -238,10 +240,6 @@ function windowResized() {
 
 function touchStarted(event) {
   if (event.type === "touchstart") {
-    if (document.querySelector(".desktop-only")) {
-      document.querySelector(".desktop-only").remove();
-    }
-    document.querySelector(".mobile-only").style.display = "block";
     for (let touch of touches) {
       touchTarget = {
         x: touch.x - CREATURE_SIZE / 2,

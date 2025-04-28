@@ -5,96 +5,41 @@
 
 body {
   background: #9ceb7d;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
   text-align: center;
-  padding: 0;
-  margin: 0;
   font-family: Pxlvetica, Arial, sans-serif;
   color: #083005;
   font-size: x-large;
-  overflow: hidden;
 }
 
-p.desktop-only {
-  display: block;
+main {
+  margin: auto;
 }
 
-p.mobile-only {
-  display: none;
+nav {
+}
+
+nav ul {
+}
+
+nav li {
+  list-style: none;
+}
+
+.icon {
+  filter: blur(0.5px);
+}
+
+figcaption {
+  font-size: smaller;
 }
 
 a {
   color: #083005;
-  text-decoration: underline wavy #bfffa5;
+  text-decoration: none;
+  /* text-decoration: underline wavy #bfffa5; */
 }
 
 a:hover {
   background-color: #bfffa5;
   transition-duration: 0.5s;
-}
-
-.h {
-  position: absolute;
-}
-
-#main-content {
-  position: absolute;
-  width: 50%;
-}
-
-#about {
-  top: 5%;
-  left: 3%;
-}
-
-#shop {
-  top: 5%;
-  right: 3%;
-}
-
-#instagram {
-  bottom: 3%;
-  left: 3%;
-}
-
-#work {
-  bottom: 3%;
-  right: 3%;
-}
-
-@media only screen and (max-width: 650px) {
-  p.desktop-only {
-    display: none;
-  }
-
-  p.mobile-only {
-    display: block;
-  }
-
-  #about {
-    left: 50%;
-    transform: translate(-50%, 0);
-    bottom: 17%;
-  }
-
-  #shop {
-    left: 50%;
-    transform: translate(-50%, 0);
-    bottom: 12%;
-  }
-
-  #instagram {
-    left: 50%;
-    transform: translate(-50%, 0);
-    bottom: 7%;
-  }
-
-  #work {
-    left: 50%;
-    transform: translate(-50%, 0);
-    bottom: 2%;
-  }
 }
