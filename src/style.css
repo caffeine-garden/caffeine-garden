@@ -11,11 +11,20 @@ body {
   font-size: x-large;
 }
 
-main {
-  margin: 0 auto;
+a {
+  color: #083005;
+  text-decoration: none;
+  /* text-decoration: underline wavy #bfffa5; */
+}
+
+a:hover {
+  background-color: #bfffa5;
+  transition-duration: 0.5s;
 }
 
 nav {
+  z-index: 10;
+  position: relative;
 }
 
 /* responsive nav without media queries - inspired by this tutorial
@@ -55,20 +64,29 @@ nav figure {
 }
 
 .icon {
-  /* filter: blur(0.5px); */
+  filter: blur(0.5px);
+  width: 2em;
+  height: 2em;
 }
 
 figcaption {
   font-size: medium;
 }
 
-a {
-  color: #083005;
-  text-decoration: none;
-  /* text-decoration: underline wavy #bfffa5; */
+main {
+  z-index: 0;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 100vh;
 }
 
-a:hover {
-  background-color: #bfffa5;
-  transition-duration: 0.5s;
+#main-content {
+  z-index: 10;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
