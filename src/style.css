@@ -22,27 +22,44 @@ nav {
 https://css-tricks.com/responsive-layouts-fewer-media-queries/#aa-control-when-the-items-wrap 
 */
 nav ul {
+  --max-row-items: 4;
+  --bounding-container-width-breakpoint: 500px;
   display: grid;
   grid-template-columns: repeat(
     auto-fit,
-    minmax(clamp(100%/ (4 + 1) + 0.1%, (100% - 500px) * 1000, 100%), 1fr)
+    minmax(
+      clamp(
+        100%/ (var(--max-row-items) + 1) + 0.1%,
+        (100% - var(--bounding-container-width-breakpoint)) * 1000,
+        100%
+      ),
+      1fr
+    )
   );
   margin: 0;
   padding: 0;
   gap: 0.5em;
+  place-items: center;
   list-style: none;
 }
 
 nav li {
-  background: red;
+  max-width: 100%;
+  height: 100%;
+}
+
+nav figure {
+  width: 100%;
+  height: 100%;
+  margin: auto;
 }
 
 .icon {
-  filter: blur(0.5px);
+  /* filter: blur(0.5px); */
 }
 
 figcaption {
-  font-size: smaller;
+  font-size: medium;
 }
 
 a {
