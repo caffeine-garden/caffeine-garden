@@ -1,59 +1,84 @@
+:root {
+  --main-color: #9ceb7d;
+  --text-color: #083005;
+  --accent-color: #bfffa5;
+  --nav-row-max-items: 4;
+  --nav-size: 4rem;
+  --device-width-breakpoint: 500px;
+
+  /* BELOW IS USELESS, BUT A NOBLE EFFORT...
+  value is 1 if viewport is wider than device-width-breakpoint, else value is 0
+  --is-wider-screen: min(1, max(0, 100vw - var(--device-width-breakpoint))); */
+}
+
 @font-face {
   font-family: Pxlvetica;
   src: url(/assets/Pxlvetica-XymZ.ttf);
 }
 
 body {
-  background: #9ceb7d;
+  background: var(--main-color);
   text-align: center;
+  color: var(--text-color);
   font-family: Pxlvetica, Arial, sans-serif;
-  color: #083005;
   font-size: x-large;
+  margin: 0;
 }
 
 a {
-  color: #083005;
+  color: var(--text-color);
   text-decoration: none;
-  /* text-decoration: underline wavy #bfffa5; */
+  /* text-decoration: underline wavy var(--accent-color); */
 }
 
 a:hover {
-  background-color: #bfffa5;
+  background-color: var(--accent-color);
   transition-duration: 0.5s;
 }
+
+/* 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧
+hi i tried making a responsive nav without media queries
+inspired by this tutorial -
+https://css-tricks.com/responsive-layouts-fewer-media-queries/#aa-control-when-the-items-wrap 
+𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧 */
 
 nav {
   z-index: 10;
   position: relative;
+  /* shorten width to create a skinny vertical nav on wider devices 
+  lengthen width to create a skinny horizontal nav on smaller devices */
+  width: clamp(
+    var(--nav-size),
+    (var(--device-width-breakpoint) - 100vw) * 1000,
+    100vw
+  );
 }
 
-/* responsive nav without media queries - inspired by this tutorial
-https://css-tricks.com/responsive-layouts-fewer-media-queries/#aa-control-when-the-items-wrap 
-*/
 nav ul {
-  --max-row-items: 4;
-  --bounding-container-width-breakpoint: 500px;
   display: grid;
+  /* use --device-width-breakpoint to control when items wrap - 
+  allow 1 item per row on wider devices
+  allow --nav-row-max-items per row on smaller devices */
   grid-template-columns: repeat(
     auto-fit,
     minmax(
       clamp(
-        100%/ (var(--max-row-items) + 1) + 0.1%,
-        (100% - var(--bounding-container-width-breakpoint)) * 1000,
+        100%/ (var(--nav-row-max-items) + 1) + 0.1%,
+        (100vw - var(--device-width-breakpoint)) * 1000,
         100%
       ),
       1fr
     )
   );
-  margin: 0;
-  padding: 0;
-  gap: 0.5em;
   place-items: center;
   list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 1rem;
 }
 
 nav li {
-  max-width: 100%;
+  width: var(--nav-size);
   height: 100%;
 }
 
@@ -65,8 +90,8 @@ nav figure {
 
 .icon {
   filter: blur(0.5px);
-  width: 2em;
-  height: 2em;
+  width: 2rem;
+  height: 2rem;
 }
 
 figcaption {
