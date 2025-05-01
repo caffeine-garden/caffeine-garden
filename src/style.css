@@ -40,25 +40,45 @@ a:hover {
 hi i tried making a responsive nav without media queries
 inspired by this tutorial -
 https://css-tricks.com/responsive-layouts-fewer-media-queries/#aa-control-when-the-items-wrap 
+
+it could honestly be replaced by a media query but i spent too much time on it to change it now...
+if you're here from the future and find it confusing, feel free to just use a media query lol
+that would probably be more readable & straightforward
 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧 */
 
 nav {
   z-index: 10;
-  position: relative;
-  /* shorten width to create a skinny vertical nav on wider devices 
-  lengthen width to create a skinny horizontal nav on smaller devices */
+  position: fixed;
+  /* shorten width to create a vertical nav on wider devices 
+  lengthen width to create a horizontal nav on narrower devices */
   width: clamp(
     var(--nav-size),
     (var(--device-width-breakpoint) - 100vw) * 1000,
     100vw
   );
+  margin: min(1.5rem, max(100vw - var(--device-width-breakpoint), 1rem));
+  left: max(-1rem, min(100vw - var(--device-width-breakpoint), 0rem));
+
+  /* this is equivalent to...
+  width: --nav-size;
+  margin: 1.5rem;
+  left: 0rem;
+  when viewport is wider than --device-width-breakpoint
+  and
+  width: 100vw;
+  margin: 1rem;
+  left: -1rem;
+  when viewport is narrower than or equal to --device-width-breakpoint
+  (approximately...)
+  */
 }
 
 nav ul {
+  list-style: none;
   display: grid;
-  /* use --device-width-breakpoint to control when items wrap - 
-  allow 1 item per row on wider devices
-  allow --nav-row-max-items per row on smaller devices */
+  /* control when items wrap - 
+  allow 1 item per row on wider devices (vertical nav)
+  allow --nav-row-max-items per row on narrower devices (horizontal nav) */
   grid-template-columns: repeat(
     auto-fit,
     minmax(
@@ -71,10 +91,10 @@ nav ul {
     )
   );
   place-items: center;
-  list-style: none;
   margin: 0;
   padding: 0;
-  gap: 1rem;
+  /* gap: 2rem on wider devices & gap: 0rem on narrower devices */
+  gap: min(2rem, max(100vw - var(--device-width-breakpoint), 0rem));
 }
 
 nav li {
