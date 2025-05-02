@@ -37,21 +37,9 @@ let jellyfish; // julie
 /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 1: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
 let activeCreature;
 const CREATURES = new Map();
-
-// attempt responsive sizing lol
-const SMALL_SCREEN_BREAKPOINT = 500;
-// value is the size of the smaller axis if the screen is small, else null
-const smallAxis =
-  window.innerWidth < SMALL_SCREEN_BREAKPOINT ||
-  window.innerHeight < SMALL_SCREEN_BREAKPOINT
-    ? Math.min(window.innerWidth, window.innerHeight)
-    : null;
-
-// default CREATURE_SIZE is 100, but scale downwards for smaller screens
-const CREATURE_SIZE = smallAxis
-  ? 100 - 0.2 * (SMALL_SCREEN_BREAKPOINT - smallAxis)
-  : 100;
+let CREATURE_SIZE = 100;
 const ARROW_SIZE = CREATURE_SIZE / 4;
+const SMALL_SCREEN_BREAKPOINT = 500;
 let blink = 0; // for arrow blinking
 let touchTarget = null; // for touchscreens
 
@@ -71,25 +59,36 @@ function setup() {
   CREATURES.set("jellyfish", jellyfish);
   /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 3: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
 
-  let x;
-  let y;
-
   let firstTime = localStorage.getItem("firstTime");
   if (!firstTime) {
     // first time loaded! initialize creature coordinates.
     // otherwise, get coordinates from localStorage
     localStorage.setItem("firstTime", "1");
 
+    // smallAxis is the size of the smaller axis if the screen is small, else null
+    const smallAxis =
+      windowWidth < SMALL_SCREEN_BREAKPOINT ||
+      windowHeight < SMALL_SCREEN_BREAKPOINT
+        ? Math.min(windowWidth, windowHeight)
+        : null;
+
+    // if screen is small, resize creatures and position accordingly
+    CREATURE_SIZE = smallAxis
+      ? CREATURE_SIZE - 0.2 * (SMALL_SCREEN_BREAKPOINT - smallAxis)
+      : CREATURE_SIZE;
+
     // TODO: HANDLE POSITIONING IN ANTICIPATION OF 10+ CREATURES
+    let x = (windowWidth - CREATURE_SIZE * CREATURES.size) / 2;
+
+    // position creatures closer to text on shorter screens (likely landscape mobile)
+    const shortScreenMultiplier =
+      windowHeight < SMALL_SCREEN_BREAKPOINT ? (100 - CREATURE_SIZE) * 0.01 : 0;
+
     const mainContentTop = document
       .querySelector("#main-content")
       .getBoundingClientRect().top;
-    x = (windowWidth - CREATURE_SIZE * CREATURES.size) / 2;
-    // position creatures closer to text on shorter screens (likely landscape mobile)
-    // recall that CREATURE_SIZE defaults to 100 and scales down on smaller screens
-    const shortScreenMultiplier =
-      windowHeight < SMALL_SCREEN_BREAKPOINT ? (100 - CREATURE_SIZE) * 0.01 : 0;
-    y = mainContentTop - CREATURE_SIZE * (1.5 - shortScreenMultiplier);
+
+    let y = mainContentTop - CREATURE_SIZE * (1.5 - shortScreenMultiplier);
 
     // store creature starting coordinates in localStorage
     CREATURES.forEach((_, creatureName) => {
