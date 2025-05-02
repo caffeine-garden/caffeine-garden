@@ -3,7 +3,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"  />
     <meta name="description" content="a little garden open past midnight." />
     <title>caffeine.garden</title>
     <link rel="icon" href="../assets/panda.svg" type="image/x-icon" />
@@ -13,22 +13,40 @@
   </head>
 
   <body>
-    <div id="main-content">
-        <a href="/">caffeine.garden</a>
-        {{ content | safe }}
-    </div>
-    <div class="h" id="about">
-      <a href="/about">about</a>
-    </div>
-    <div class="h" id="instagram">
-      <a href="https://www.instagram.com/caffeine.garden/">instagram</a>
-    </div>
-    <div class="h" id="shop">
-      <a href="/shop">coming soon</a>
-    </div>
-    <div class="h" id="work">
-      <a href="https://github.com/caffeine-garden/caffeine-garden">see work</a>
-    </div>
+    <nav>
+      <ul>
+        <li><a href="/about">
+          <figure>
+            <img class="icon" src="../assets/tree.ico" alt="a tree" />
+            <figcaption>about</figcaption>
+          </figure>
+        </a></li>
+        <li><a href="/shop">
+          <figure>
+            <img class="icon" src="../assets/plush_bear.ico" alt="a plush bear" />
+            <figcaption>shop</figcaption>
+          </figure>
+        </a></li>
+        <li><a href="https://www.instagram.com/caffeine.garden/" target="_blank">
+          <figure>
+            <img class="icon" src="../assets/earth_computer.ico" alt="a computer in front of the earth" />
+            <figcaption>insta</figcaption>
+          </figure>
+        </a></li>
+        <li><a href="https://github.com/caffeine-garden/caffeine-garden" target="_blank">
+          <figure>
+            <img class="icon" src="../assets/paintbucket.ico" alt="a paint bucket" />
+            <figcaption>work</figcaption>
+          </figure>
+        </a></li>
+      </ul>
+    </nav>
+    <main>
+      <div id="main-content">
+          <a href="/" id="home">caffeine.garden</a>
+          {{ content | safe }}
+      </div>
+    </main>
   </body>
 
 </html>

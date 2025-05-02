@@ -37,8 +37,9 @@ let jellyfish; // julie
 /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 1: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
 let activeCreature;
 const CREATURES = new Map();
-const CREATURE_SIZE = 100;
+let CREATURE_SIZE = 100;
 const ARROW_SIZE = CREATURE_SIZE / 4;
+const SMALL_SCREEN_BREAKPOINT = 500;
 let blink = 0; // for arrow blinking
 let touchTarget = null; // for touchscreens
 
@@ -51,15 +52,28 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  // smallAxis is the size of the smaller axis if the screen is small, else null
+  const smallAxis =
+    windowWidth < SMALL_SCREEN_BREAKPOINT ||
+    windowHeight < SMALL_SCREEN_BREAKPOINT
+      ? Math.min(windowWidth, windowHeight)
+      : null;
+
+  if (smallAxis) {
+    if (windowWidth < windowHeight) {
+      // using displayWidth / displayHeight mostly fixes mobile weirdness...
+      createCanvas(displayWidth, displayHeight); // portrait mode
+    } else {
+      createCanvas(displayHeight, displayWidth); // landscape mode
+    }
+  } else {
+    createCanvas(windowWidth, windowHeight);
+  }
 
   CREATURES.set("panda", panda);
   CREATURES.set("bunny", bunny);
   CREATURES.set("jellyfish", jellyfish);
   /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 3: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
-
-  let x;
-  let y;
 
   let firstTime = localStorage.getItem("firstTime");
   if (!firstTime) {
@@ -67,15 +81,25 @@ function setup() {
     // otherwise, get coordinates from localStorage
     localStorage.setItem("firstTime", "1");
 
+    // if screen is small, resize creatures and position accordingly
+    CREATURE_SIZE = smallAxis
+      ? CREATURE_SIZE - 0.2 * (SMALL_SCREEN_BREAKPOINT - smallAxis)
+      : CREATURE_SIZE;
+
+    // TODO: HANDLE POSITIONING IN ANTICIPATION OF 10+ CREATURES
+    let x = (windowWidth - CREATURE_SIZE * CREATURES.size) / 2;
+
+    // position creatures closer to text on shorter screens (likely landscape mobile)
+    const shortScreenMultiplier =
+      windowHeight < SMALL_SCREEN_BREAKPOINT ? (100 - CREATURE_SIZE) * 0.01 : 0;
+
     const mainContentTop = document
       .querySelector("#main-content")
       .getBoundingClientRect().top;
-    // position creatures closer to text on shorter screens (landscape mobile)
-    const shortScreenMultiplier = windowHeight < 500 ? 0.4 : 0;
-    x = (windowWidth - CREATURE_SIZE * CREATURES.size) / 2;
-    y = mainContentTop - CREATURE_SIZE * (1.5 - shortScreenMultiplier);
 
-    // store starting creature coordinates in localStorage
+    let y = mainContentTop - CREATURE_SIZE * (1.5 - shortScreenMultiplier);
+
+    // store creature starting coordinates in localStorage
     CREATURES.forEach((_, creatureName) => {
       storeItem(creatureName + "X", x);
       storeItem(creatureName + "Y", y);
@@ -238,10 +262,6 @@ function windowResized() {
 
 function touchStarted(event) {
   if (event.type === "touchstart") {
-    if (document.querySelector(".desktop-only")) {
-      document.querySelector(".desktop-only").remove();
-    }
-    document.querySelector(".mobile-only").style.display = "block";
     for (let touch of touches) {
       touchTarget = {
         x: touch.x - CREATURE_SIZE / 2,
@@ -262,12 +282,4 @@ function touchMoved() {
 
 function touchEnded() {
   touchTarget = null;
-}
-
-// switch between creatures by shaking device
-// TODO FIX OR CHANGE THIS
-function deviceShaken() {
-  let i = getItem("activeCreatureIndex");
-  i = (i + 1) % CREATURES.size;
-  setActiveCreature(i);
 }

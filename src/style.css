@@ -1,100 +1,163 @@
+:root {
+  --main-color: #9ceb7d;
+  --text-color: #083005;
+  --accent-color: #bfffa5;
+  --nav-row-max-items: 4;
+  --nav-size: 4rem;
+  --device-width-breakpoint: 500px;
+
+  /* BELOW IS USELESS, BUT A NOBLE EFFORT...
+  value is 1 if viewport is wider than device-width-breakpoint, else value is 0
+  --is-wider-screen: min(1, max(0, 100vw - var(--device-width-breakpoint))); */
+}
+
 @font-face {
   font-family: Pxlvetica;
   src: url(/assets/Pxlvetica-XymZ.ttf);
 }
 
 body {
-  background: #9ceb7d;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
+  background: var(--main-color);
   text-align: center;
-  padding: 0;
-  margin: 0;
+  color: var(--text-color);
   font-family: Pxlvetica, Arial, sans-serif;
-  color: #083005;
   font-size: x-large;
+  margin: 0;
+  height: 100vh;
   overflow: hidden;
+
+  /* disable selection outside of modals */
+  user-select: none;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
 }
 
-p.desktop-only {
-  display: block;
+/* 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧
+hi i tried making a responsive nav without media queries
+inspired by this tutorial -
+https://css-tricks.com/responsive-layouts-fewer-media-queries/#aa-control-when-the-items-wrap 
+
+it could honestly be replaced by a media query but i spent too much time on it to change it now...
+if you're here from the future and find it confusing, feel free to just use a media query lol
+that would probably be more readable & straightforward
+𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧 */
+
+nav {
+  z-index: 10;
+  position: fixed;
+  /* shorten width to create a vertical nav on wider devices 
+  lengthen width to create a horizontal nav on narrower devices */
+  width: clamp(
+    var(--nav-size),
+    (var(--device-width-breakpoint) - 100vw) * 1000,
+    100vw
+  );
+  margin: min(1.5rem, max(100vw - var(--device-width-breakpoint), 1rem));
+  left: max(-1rem, min(100vw - var(--device-width-breakpoint), 0rem));
+
+  /* this is equivalent to...
+  width: --nav-size;
+  margin: 1.5rem;
+  left: 0rem;
+  when viewport is wider than --device-width-breakpoint
+  and
+  width: 100vw;
+  margin: 1rem;
+  left: -1rem;
+  when viewport is narrower than or equal to --device-width-breakpoint
+  (approximately...)
+  */
 }
 
-p.mobile-only {
-  display: none;
+nav ul {
+  list-style: none;
+  display: grid;
+  /* control when items wrap - 
+  allow 1 item per row on wider devices (vertical nav)
+  allow --nav-row-max-items per row on narrower devices (horizontal nav) */
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(
+      clamp(
+        100%/ (var(--nav-row-max-items) + 1) + 0.1%,
+        (100vw - var(--device-width-breakpoint)) * 1000,
+        100%
+      ),
+      1fr
+    )
+  );
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  /* gap: 2rem on wider devices & gap: 0rem on narrower devices */
+  gap: min(2rem, max(100vw - var(--device-width-breakpoint), 0rem));
 }
 
-a {
-  color: #083005;
-  text-decoration: underline wavy #bfffa5;
+nav li {
+  width: var(--nav-size);
+  height: 100%;
 }
 
-a:hover {
-  background-color: #bfffa5;
-  transition-duration: 0.5s;
+nav figure {
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  padding-top: 10px;
 }
 
-.h {
+nav img {
+  filter: sepia(0.3) drop-shadow(-3px -1px var(--text-color));
+}
+
+nav figure:hover {
+  filter: hue-rotate(-130deg) sepia(0.3);
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px dashed var(--accent-color);
+  border-radius: 50%;
+  transition-duration: 0.3s;
+}
+
+figcaption {
+  font-size: large;
+  background-color: var(--accent-color);
+  border: hidden;
+  border-radius: 30%;
+}
+
+main {
+  z-index: 0;
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 100vh;
 }
 
 #main-content {
+  z-index: 10;
   position: absolute;
-  width: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-#about {
-  top: 5%;
-  left: 3%;
+#home {
+  /* backdrop-filter: invert(80%); */
+  /* outline: 1px dashed var(--accent-color); */
 }
 
-#shop {
-  top: 5%;
-  right: 3%;
+a {
+  color: var(--text-color);
+  text-decoration: none;
+  /* text-decoration: underline wavy var(--accent-color); */
 }
 
-#instagram {
-  bottom: 3%;
-  left: 3%;
+a:hover {
+  background-color: var(--accent-color);
+  transition-duration: 0.5s;
 }
 
-#work {
-  bottom: 3%;
-  right: 3%;
-}
-
-@media only screen and (max-width: 650px) {
-  p.desktop-only {
-    display: none;
-  }
-
-  p.mobile-only {
-    display: block;
-  }
-
-  #about {
-    left: 50%;
-    transform: translate(-50%, 0);
-    bottom: 17%;
-  }
-
-  #shop {
-    left: 50%;
-    transform: translate(-50%, 0);
-    bottom: 12%;
-  }
-
-  #instagram {
-    left: 50%;
-    transform: translate(-50%, 0);
-    bottom: 7%;
-  }
-
-  #work {
-    left: 50%;
-    transform: translate(-50%, 0);
-    bottom: 2%;
-  }
+p {
+  margin: 2vh auto;
 }
