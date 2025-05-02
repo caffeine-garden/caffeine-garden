@@ -1,10 +1,21 @@
 ## hello don't read me actually...
 
-- [ ] SCRAPER NO SCRAPING – FIGURE OUT HOW TO AVOID BIG CORP LLM SCALPELS
 - [x] fix low res svgs on mobile
 - [x] fix weird formatting on mobile
+- [x] replace text navigation with icons
 - [ ] update this readme with guide lol
 - [x] transfer caffeine.garden domain to this account
+- [ ] speech bubble with instructions for desktop
+- [ ] speech bubble with instructions for mobile
+- [ ] ability to switch characters on mobile
+- [ ] pop-up modals for "about" and "shop" instead of changing text
+- [x] glitchy / low-res css filters on icons
+
+stretch for now...
+
+- [ ] display ERROR on mobile landscape mode lol cuz it barely works
+- [ ] speech bubbles for creature bios (gardener profiles)
+- [ ] SCRAPER NO SCRAPING – FIGURE OUT HOW TO AVOID BIG CORP LLM SCALPELS
 
 ## foraging... some references & interesting things
 
