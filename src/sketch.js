@@ -52,7 +52,23 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  // smallAxis is the size of the smaller axis if the screen is small, else null
+  const smallAxis =
+    windowWidth < SMALL_SCREEN_BREAKPOINT ||
+    windowHeight < SMALL_SCREEN_BREAKPOINT
+      ? Math.min(windowWidth, windowHeight)
+      : null;
+
+  if (smallAxis) {
+    if (windowWidth < windowHeight) {
+      // using displayWidth / displayHeight mostly fixes mobile weirdness...
+      createCanvas(displayWidth, displayHeight); // portrait mode
+    } else {
+      createCanvas(displayHeight, displayWidth); // landscape mode
+    }
+  } else {
+    createCanvas(windowWidth, windowHeight);
+  }
 
   CREATURES.set("panda", panda);
   CREATURES.set("bunny", bunny);
@@ -64,13 +80,6 @@ function setup() {
     // first time loaded! initialize creature coordinates.
     // otherwise, get coordinates from localStorage
     localStorage.setItem("firstTime", "1");
-
-    // smallAxis is the size of the smaller axis if the screen is small, else null
-    const smallAxis =
-      windowWidth < SMALL_SCREEN_BREAKPOINT ||
-      windowHeight < SMALL_SCREEN_BREAKPOINT
-        ? Math.min(windowWidth, windowHeight)
-        : null;
 
     // if screen is small, resize creatures and position accordingly
     CREATURE_SIZE = smallAxis
@@ -273,12 +282,4 @@ function touchMoved() {
 
 function touchEnded() {
   touchTarget = null;
-}
-
-// switch between creatures by shaking device
-// TODO FIX OR CHANGE THIS
-function deviceShaken() {
-  let i = getItem("activeCreatureIndex");
-  i = (i + 1) % CREATURES.size;
-  setActiveCreature(i);
 }

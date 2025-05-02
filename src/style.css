@@ -116,7 +116,7 @@ nav figure {
 }
 
 .icon {
-  filter: blur(0.5px);
+  /* filter: blur(0.5px); */
   width: 2rem;
   height: 2rem;
 }
