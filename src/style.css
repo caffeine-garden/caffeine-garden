@@ -23,6 +23,13 @@ body {
   font-family: Pxlvetica, Arial, sans-serif;
   font-size: x-large;
   margin: 0;
+  height: 100vh;
+  overflow: hidden;
+
+  /* disable selection outside of modals */
+  user-select: none;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
 }
 
 a {
@@ -120,7 +127,7 @@ figcaption {
 
 main {
   z-index: 0;
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -130,8 +137,12 @@ main {
 
 #main-content {
   z-index: 10;
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+p {
+  margin: 2vh auto;
 }
