@@ -142,6 +142,10 @@ function draw() {
 
   // draw creatures
   CREATURES.forEach((creature, creatureName) => {
+    if (getItem(creatureName + "X") == null) {
+      setup();
+    }
+
     image(
       creature,
       getItem(creatureName + "X"),
