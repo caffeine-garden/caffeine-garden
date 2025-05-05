@@ -39,8 +39,8 @@ let frog; // yen
 let activeCreature;
 const CREATURES = new Map();
 let CREATURE_SIZE = 100;
-const ARROW_SIZE = CREATURE_SIZE / 4;
-const SMALL_SCREEN_BREAKPOINT = 500;
+let ARROW_SIZE;
+const SMALL_SCREEN_BREAKPOINT = 650;
 let blink = 0; // for arrow blinking
 let touchTarget = null; // for touchscreens
 
@@ -55,6 +55,7 @@ function preload() {
 
 function setup() {
   localStorage.clear();
+  pixelDensity(2);
 
   // smallAxis is the size of the smaller axis if the screen is small, else null
   const smallAxis =
@@ -82,20 +83,18 @@ function setup() {
 
   // if screen is small, resize creatures and position accordingly
   CREATURE_SIZE = smallAxis
-    ? CREATURE_SIZE - 0.2 * (SMALL_SCREEN_BREAKPOINT - smallAxis)
+    ? CREATURE_SIZE - 0.1 * (SMALL_SCREEN_BREAKPOINT - smallAxis)
     : CREATURE_SIZE;
+  ARROW_SIZE = CREATURE_SIZE / 4;
 
   // TODO: HANDLE POSITIONING IN ANTICIPATION OF 10+ CREATURES
   let x = (windowWidth - CREATURE_SIZE * CREATURES.size) / 2;
-
   // position creatures closer to text on shorter screens (likely landscape mobile)
-  const shortScreenMultiplier =
-    windowHeight < SMALL_SCREEN_BREAKPOINT ? (100 - CREATURE_SIZE) * 0.01 : 0;
-
   const mainContentTop = document
     .querySelector("#main-content")
     .getBoundingClientRect().top;
-
+  const shortScreenMultiplier =
+    windowHeight < SMALL_SCREEN_BREAKPOINT ? (100 - CREATURE_SIZE) * 0.01 : 0;
   let y = mainContentTop - CREATURE_SIZE * (1.5 - shortScreenMultiplier);
 
   // store creature starting coordinates in localStorage
