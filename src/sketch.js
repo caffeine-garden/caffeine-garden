@@ -171,25 +171,26 @@ function draw() {
     );
   }
 
+  const speed = keyIsDown(16) ? 10 : 5;
   // move the active creature with WASD
   if (keyIsDown(65) === true) {
     // A key; go left
-    activeCreature.x -= 5;
+    activeCreature.x -= speed;
     storeItem(activeCreatureName + "X", activeCreature.x);
   }
   if (keyIsDown(68) === true) {
     // D key; go right
-    activeCreature.x += 5;
+    activeCreature.x += speed;
     storeItem(activeCreatureName + "X", activeCreature.x);
   }
   if (keyIsDown(87) === true) {
     // W key; go up
-    activeCreature.y -= 5;
+    activeCreature.y -= speed;
     storeItem(activeCreatureName + "Y", activeCreature.y);
   }
   if (keyIsDown(83) === true) {
     // S key; go down
-    activeCreature.y += 5;
+    activeCreature.y += speed;
     storeItem(activeCreatureName + "Y", activeCreature.y);
   }
 
