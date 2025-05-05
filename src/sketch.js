@@ -52,6 +52,8 @@ function preload() {
 }
 
 function setup() {
+  localStorage.clear();
+
   // smallAxis is the size of the smaller axis if the screen is small, else null
   const smallAxis =
     windowWidth < SMALL_SCREEN_BREAKPOINT ||
@@ -61,7 +63,7 @@ function setup() {
 
   if (smallAxis) {
     if (windowWidth < windowHeight) {
-      // using displayWidth / displayHeight mostly fixes mobile weirdness...
+      // using displayWidth and displayHeight mostly fixes mobile weirdness...
       createCanvas(displayWidth, displayHeight); // portrait mode
     } else {
       createCanvas(displayHeight, displayWidth); // landscape mode
@@ -75,40 +77,33 @@ function setup() {
   CREATURES.set("jellyfish", jellyfish);
   /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 3: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
 
-  let firstTime = localStorage.getItem("firstTime");
-  if (!firstTime) {
-    // first time loaded! initialize creature coordinates.
-    // otherwise, get coordinates from localStorage
-    localStorage.setItem("firstTime", "1");
+  // if screen is small, resize creatures and position accordingly
+  CREATURE_SIZE = smallAxis
+    ? CREATURE_SIZE - 0.2 * (SMALL_SCREEN_BREAKPOINT - smallAxis)
+    : CREATURE_SIZE;
 
-    // if screen is small, resize creatures and position accordingly
-    CREATURE_SIZE = smallAxis
-      ? CREATURE_SIZE - 0.2 * (SMALL_SCREEN_BREAKPOINT - smallAxis)
-      : CREATURE_SIZE;
+  // TODO: HANDLE POSITIONING IN ANTICIPATION OF 10+ CREATURES
+  let x = (windowWidth - CREATURE_SIZE * CREATURES.size) / 2;
 
-    // TODO: HANDLE POSITIONING IN ANTICIPATION OF 10+ CREATURES
-    let x = (windowWidth - CREATURE_SIZE * CREATURES.size) / 2;
+  // position creatures closer to text on shorter screens (likely landscape mobile)
+  const shortScreenMultiplier =
+    windowHeight < SMALL_SCREEN_BREAKPOINT ? (100 - CREATURE_SIZE) * 0.01 : 0;
 
-    // position creatures closer to text on shorter screens (likely landscape mobile)
-    const shortScreenMultiplier =
-      windowHeight < SMALL_SCREEN_BREAKPOINT ? (100 - CREATURE_SIZE) * 0.01 : 0;
+  const mainContentTop = document
+    .querySelector("#main-content")
+    .getBoundingClientRect().top;
 
-    const mainContentTop = document
-      .querySelector("#main-content")
-      .getBoundingClientRect().top;
+  let y = mainContentTop - CREATURE_SIZE * (1.5 - shortScreenMultiplier);
 
-    let y = mainContentTop - CREATURE_SIZE * (1.5 - shortScreenMultiplier);
+  // store creature starting coordinates in localStorage
+  CREATURES.forEach((_, creatureName) => {
+    storeItem(creatureName + "X", x);
+    storeItem(creatureName + "Y", y);
+    x += CREATURE_SIZE;
+  });
 
-    // store creature starting coordinates in localStorage
-    CREATURES.forEach((_, creatureName) => {
-      storeItem(creatureName + "X", x);
-      storeItem(creatureName + "Y", y);
-      x += CREATURE_SIZE;
-    });
-
-    // the intial active creature is at index 0
-    storeItem("activeCreatureIndex", 0);
-  }
+  // the intial active creature is at index 0
+  storeItem("activeCreatureIndex", 0);
 }
 
 // returns the p5 image for the current active creature by inspecting localStorage
@@ -254,11 +249,14 @@ function keyReleased() {
   }
 }
 
-// reset creature position when window size changes
+// refresh page when window size changes
+let throttled = false;
 function windowResized() {
-  localStorage.clear();
-  setup();
-  resizeCanvas(windowWidth, windowHeight);
+  if (!throttled) {
+    location.reload();
+    throttled = true;
+    setTimeout(() => (throttled = false), 500);
+  }
 }
 
 /**
