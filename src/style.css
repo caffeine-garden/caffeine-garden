@@ -4,7 +4,7 @@
   --accent-color: #bfffa5;
   --nav-row-max-items: 4;
   --nav-size: 4rem;
-  --device-width-breakpoint: 500px;
+  --device-width-breakpoint: 650px;
 
   /* BELOW IS USELESS, BUT A NOBLE EFFORT...
   value is 1 if viewport is wider than device-width-breakpoint, else value is 0
