@@ -34,6 +34,7 @@
 let panda; // selene
 let bunny; // lucy
 let jellyfish; // julie
+let frog; // yen
 /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 1: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
 let activeCreature;
 const CREATURES = new Map();
@@ -47,6 +48,7 @@ function preload() {
   panda = loadImage("/assets/panda.svg");
   bunny = loadImage("/assets/bunny.svg");
   jellyfish = loadImage("/assets/jellyfish.svg");
+  frog = loadImage("/assets/frog.svg");
   /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 2: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
   arrow = loadImage("/assets/arrow.svg");
 }
@@ -73,6 +75,7 @@ function setup() {
   CREATURES.set("panda", panda);
   CREATURES.set("bunny", bunny);
   CREATURES.set("jellyfish", jellyfish);
+  CREATURES.set("frog", frog);
   /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 3: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
 
   let firstTime = localStorage.getItem("firstTime");
