@@ -31,46 +31,96 @@
  * 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧
  */
 
+const CREATURES = new Map();
+let CREATURE_SIZE;
+const SMALL_SCREEN_BREAKPOINT = 500;
+let blink = 0; // for arrow blinking
+let touchTarget = null; // for touchscreens
+let activeCreature;
 let panda; // selene
 let bunny; // lucy
 let jellyfish; // julie
 let frog; // yen
 /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 1: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
-let activeCreature;
-const CREATURES = new Map();
-let CREATURE_SIZE = 100;
-const ARROW_SIZE = CREATURE_SIZE / 4;
-const SMALL_SCREEN_BREAKPOINT = 500;
-let blink = 0; // for arrow blinking
-let touchTarget = null; // for touchscreens
+
+const createUser = ({ firstName, lastName, email }) => ({
+  firstName,
+  lastName,
+  email,
+  fullName() {
+    return `${this.firstName} ${this.lastName}`;
+  },
+});
+
+class CreatureSession {
+  constructor(
+    creatures = [],
+    creatureSize = 100,
+    activeCreatureIndex = 0,
+    screenBreakpoint = 500
+  ) {
+    this.creatures = creatures;
+    this.creatureSize = creatureSize;
+    this.activeCreatureIndex = activeCreatureIndex;
+    this.screenBreakpoint = screenBreakpoint;
+
+    this.blink = 0;
+    this.touchTarget = null;
+    this.width = document.documentElement.clientWidth;
+    this.height = document.documentElement.clientHeight;
+  }
+}
+
+// TODO collect more member info and attach here
+// creates a p5.Image object and attaches creature metadata
+const newCreatureImage = (path, creatureName, humanName) => {
+  const img = loadImage(path);
+  img.creatureName = creatureName;
+  img.humanName = humanName;
+  return img;
+};
 
 function preload() {
-  panda = loadImage("/assets/panda.svg");
-  bunny = loadImage("/assets/bunny.svg");
-  jellyfish = loadImage("/assets/jellyfish.svg");
-  frog = loadImage("/assets/frog.svg");
-  /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 2: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
   arrow = loadImage("/assets/arrow.svg");
+  panda = newCreatureImage("/assets/panda.svg", "panda", "selene");
+  bunny = newCreatureImage("/assets/bunny.svg", "bunny", "lucy");
+  jellyfish = newCreatureImage("/assets/jellyfish.svg", "jellyfish", "julie");
+  frog = newCreatureImage("/assets/frog.svg", "frog", "yen");
+  /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 2: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
+}
+
+function createCreatureCanvas() {
+  // let canvas = document.querySelector("canvas")
+  // if (canvas) {
+  // }
 }
 
 function setup() {
   // smallAxis is the size of the smaller axis if the screen is small, else null
   const smallAxis =
-    windowWidth < SMALL_SCREEN_BREAKPOINT ||
-    windowHeight < SMALL_SCREEN_BREAKPOINT
-      ? Math.min(windowWidth, windowHeight)
+    document.documentElement.clientWidth < SMALL_SCREEN_BREAKPOINT ||
+    document.documentElement.clientHeight < SMALL_SCREEN_BREAKPOINT
+      ? Math.min(
+          document.documentElement.clientWidth,
+          document.documentElement.clientHeight
+        )
       : null;
 
-  if (smallAxis) {
-    if (windowWidth < windowHeight) {
-      // using displayWidth / displayHeight mostly fixes mobile weirdness...
-      createCanvas(displayWidth, displayHeight); // portrait mode
-    } else {
-      createCanvas(displayHeight, displayWidth); // landscape mode
-    }
-  } else {
-    createCanvas(windowWidth, windowHeight);
-  }
+  // if (smallAxis) {
+  //   if (windowWidth < windowHeight) {
+  //     // using displayWidth / displayHeight mostly fixes mobile weirdness...
+  //     createCanvas(displayWidth, displayHeight); // portrait mode
+  //   } else {
+  //     createCanvas(displayHeight, displayWidth); // landscape mode
+  //   }
+  // } else {
+  //   createCanvas(windowWidth, windowHeight);
+  // }
+
+  createCanvas(
+    document.documentElement.clientWidth,
+    document.documentElement.clientHeight
+  );
 
   CREATURES.set("panda", panda);
   CREATURES.set("bunny", bunny);
@@ -86,15 +136,19 @@ function setup() {
 
     // if screen is small, resize creatures and position accordingly
     CREATURE_SIZE = smallAxis
-      ? CREATURE_SIZE - 0.2 * (SMALL_SCREEN_BREAKPOINT - smallAxis)
-      : CREATURE_SIZE;
+      ? 100 - 0.2 * (SMALL_SCREEN_BREAKPOINT - smallAxis)
+      : 100;
 
     // TODO: HANDLE POSITIONING IN ANTICIPATION OF 10+ CREATURES
-    let x = (windowWidth - CREATURE_SIZE * CREATURES.size) / 2;
+    let x =
+      (document.documentElement.clientWidth - CREATURE_SIZE * CREATURES.size) /
+      2;
 
     // position creatures closer to text on shorter screens (likely landscape mobile)
     const shortScreenMultiplier =
-      windowHeight < SMALL_SCREEN_BREAKPOINT ? (100 - CREATURE_SIZE) * 0.01 : 0;
+      document.documentElement.clientHeight < SMALL_SCREEN_BREAKPOINT
+        ? (100 - CREATURE_SIZE) * 0.01
+        : 0;
 
     const mainContentTop = document
       .querySelector("#main-content")
@@ -138,6 +192,10 @@ function setActiveCreature(activeCreatureIndex) {
   return activeCreature;
 }
 
+function getCreatureSize() {
+  // TODO
+}
+
 function draw() {
   background("#9CEB7D");
   fill("#9CEB7D");
@@ -164,6 +222,7 @@ function draw() {
 
   // draw blinking arrow to highlight the active creature
   blink++;
+  const ARROW_SIZE = CREATURE_SIZE / 4;
   if (blink % 50 > 10) {
     image(
       arrow,
@@ -219,18 +278,21 @@ function draw() {
 
   // keep creatures within the bounds of the screen
   if (activeCreature.x < 0 - CREATURE_SIZE) {
-    activeCreature.x = windowWidth + CREATURE_SIZE;
+    activeCreature.x = document.documentElement.clientWidth + CREATURE_SIZE;
     storeItem(activeCreatureName + "X", activeCreature.x);
   }
-  if (activeCreature.x > windowWidth + CREATURE_SIZE) {
+  if (activeCreature.x > document.documentElement.clientWidth + CREATURE_SIZE) {
     activeCreature.x = 0 - CREATURE_SIZE;
     storeItem(activeCreatureName + "X", activeCreature.x);
   }
   if (activeCreature.y < 0 - CREATURE_SIZE) {
-    activeCreature.y = windowHeight + CREATURE_SIZE;
+    activeCreature.y = document.documentElement.clientHeight + CREATURE_SIZE;
     storeItem(activeCreatureName + "Y", activeCreature.y);
   }
-  if (activeCreature.y > windowHeight + CREATURE_SIZE) {
+  if (
+    activeCreature.y >
+    document.documentElement.clientHeight + CREATURE_SIZE
+  ) {
     activeCreature.y = 0 - CREATURE_SIZE;
     storeItem(activeCreatureName + "Y", activeCreature.y);
   }
@@ -258,10 +320,30 @@ function keyReleased() {
 }
 
 // reset creature position when window size changes
+let timeout = false;
 function windowResized() {
-  localStorage.clear();
-  setup();
-  resizeCanvas(windowWidth, windowHeight);
+  clearTimeout(timeout);
+  timeout = setTimeout(() => {
+    console.log(
+      "resize! window",
+      document.documentElement.clientWidth,
+      document.documentElement.clientHeight
+    );
+    localStorage.clear();
+    setup();
+    // resizeCanvas(
+    //   document.documentElement.clientWidth,
+    //   document.documentElement.clientHeight
+    // );
+  }, 250);
+  // console.log("window", windowWidth, windowHeight);
+  // console.log("display", displayWidth, displayHeight);
+  // resizeCanvas(windowWidth, windowHeight);
+  // noLoop();
+  // localStorage.clear();
+  // setup();
+  // loop();
+  // resizeCanvas(windowWidth, windowHeight);
 }
 
 /**
