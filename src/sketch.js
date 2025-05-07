@@ -15,11 +15,11 @@
  *        const worm = newCreature("/assets/worm.svg", "worm", "your_name");
  *
  * 2. add your worm to the CreatureSession, also in function preload()
- *    basically edit the line starting with "session = new CreatureSession"
+ *    basically edit the line starting with "sesh = new CreatureSession"
  *    to include your worm at the end of the list of creatures
  *
  *    eg:
- *        session = new CreatureSession([panda, bunny, jellyfish, frog, worm], arrow);
+ *        sesh = new CreatureSession([panda, bunny, jellyfish, frog, worm], arrow);
  *
  * 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧
  * 𖡼.𖤣𖥧𖡼 AND THAT'S ALL 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.
@@ -29,7 +29,7 @@
  */
 
 /**
- * stores creature and canvas data for a given user session
+ * stores creature and canvas data for a given user sesh
  * @param {p5.Image[]} creatures - an array of p5.Images
  */
 class CreatureSession {
@@ -71,6 +71,17 @@ class CreatureSession {
       storeItem(creature.name + "X", x);
       storeItem(creature.name + "Y", y);
       x += size;
+    });
+  }
+
+  // creates a p5 canvas and retrieves creature x,y positions from localStorage
+  reinitialize() {
+    console.log("reintialized");
+    createCanvas(this.width, this.height);
+
+    this.creatures.forEach((creature) => {
+      creature.x = getItem(creature.name + "X");
+      creature.y = getItem(creature.name + "Y");
     });
   }
 
@@ -183,7 +194,7 @@ const newCreature = (path, name, humanName) => {
   return img;
 };
 
-let session;
+let sesh;
 function preload() {
   const arrow = loadImage("/assets/arrow.svg");
   const panda = newCreature("/assets/panda.svg", "panda", "selene");
@@ -192,7 +203,7 @@ function preload() {
   const frog = newCreature("/assets/frog.svg", "frog", "yen");
   /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 1: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
 
-  session = new CreatureSession([panda, bunny, jellyfish, frog], arrow);
+  sesh = new CreatureSession([panda, bunny, jellyfish, frog], arrow);
   /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 2: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
 }
 
@@ -200,9 +211,11 @@ function setup() {
   let previouslyLoaded = localStorage.getItem("previouslyLoaded");
   if (!previouslyLoaded) {
     // first time loaded! initialize creature coordinates.
-    // otherwise, get coordinates from localStorage
     localStorage.setItem("previouslyLoaded", "1");
-    session.initialize();
+    sesh.initialize();
+  } else {
+    // get creature coordinates from localStorage
+    sesh.reinitialize();
   }
 }
 
@@ -212,66 +225,66 @@ function draw() {
   stroke("#083005");
 
   // draw creatures
-  session.drawCreatures();
+  sesh.drawCreatures();
 
   // move the active creature with WASD
   // use spacebar for 2x speed
   const speed = keyIsDown(16) ? 10 : 5;
   if (keyIsDown(65) === true) {
     // A key; go left
-    session.currentX -= speed;
+    sesh.currentX -= speed;
   }
   if (keyIsDown(68) === true) {
     // D key; go right
-    session.currentX += speed;
+    sesh.currentX += speed;
   }
   if (keyIsDown(87) === true) {
     // W key; go up
-    session.currentY -= speed;
+    sesh.currentY -= speed;
   }
   if (keyIsDown(83) === true) {
     // S key; go down
-    session.currentY += speed;
+    sesh.currentY += speed;
   }
 
   // move the active creature by tapping a touchscreen
-  if (session.touchTarget) {
-    if (session.currentX > session.touchTarget.x) {
-      session.currentX -= 5;
+  if (sesh.touchTarget) {
+    if (sesh.currentX > sesh.touchTarget.x) {
+      sesh.currentX -= 5;
     }
-    if (session.currentX < session.touchTarget.x) {
-      session.currentX += 5;
+    if (sesh.currentX < sesh.touchTarget.x) {
+      sesh.currentX += 5;
     }
-    if (session.currentY > session.touchTarget.y) {
-      session.currentY -= 5;
+    if (sesh.currentY > sesh.touchTarget.y) {
+      sesh.currentY -= 5;
     }
-    if (session.currentY < session.touchTarget.y) {
-      session.currentY += 5;
+    if (sesh.currentY < sesh.touchTarget.y) {
+      sesh.currentY += 5;
     }
   }
 
   // keep creatures within the bounds of the screen
-  if (session.currentX < 0 - session.creatureSize) {
-    session.currentX = session.width + session.creatureSize;
+  if (sesh.currentX < 0 - sesh.creatureSize) {
+    sesh.currentX = sesh.width + sesh.creatureSize;
   }
-  if (session.currentX > session.width + session.creatureSize) {
-    session.currentX = 0 - session.creatureSize;
+  if (sesh.currentX > sesh.width + sesh.creatureSize) {
+    sesh.currentX = 0 - sesh.creatureSize;
   }
-  if (session.currentY < 0 - session.creatureSize) {
-    session.currentY = session.width + session.creatureSize;
+  if (sesh.currentY < 0 - sesh.creatureSize) {
+    sesh.currentY = sesh.width + sesh.creatureSize;
   }
-  if (session.currentY > session.width + session.creatureSize) {
-    session.currentY = 0 - session.creatureSize;
+  if (sesh.currentY > sesh.width + sesh.creatureSize) {
+    sesh.currentY = 0 - sesh.creatureSize;
   }
 }
 
 // switch between creatures using arrow keys
 function keyReleased() {
   if (key === "ArrowRight" || key === "ArrowUp") {
-    session.nextActiveCreature();
+    sesh.nextActiveCreature();
   }
   if (key === "ArrowLeft" || key === "ArrowDown") {
-    session.lastActiveCreature();
+    sesh.lastActiveCreature();
   }
 }
 
@@ -280,7 +293,7 @@ let timeout = false;
 function windowResized() {
   clearTimeout(timeout);
   timeout = setTimeout(() => {
-    console.log("resize!", session.width, session.height);
+    console.log("resize!", sesh.width, sesh.height);
     localStorage.clear();
     setup();
   }, 250);
@@ -299,9 +312,9 @@ function windowResized() {
 function touchStarted(event) {
   if (event.type === "touchstart") {
     for (let touch of touches) {
-      session.touchTarget = {
-        x: touch.x - session.creatureSize / 2,
-        y: touch.y - session.creatureSize / 2,
+      sesh.touchTarget = {
+        x: touch.x - sesh.creatureSize / 2,
+        y: touch.y - sesh.creatureSize / 2,
       };
     }
   }
@@ -309,13 +322,13 @@ function touchStarted(event) {
 
 function touchMoved() {
   for (let touch of touches) {
-    session.touchTarget = {
-      x: touch.x - session.creatureSize / 2,
-      y: touch.y - session.creatureSize / 2,
+    sesh.touchTarget = {
+      x: touch.x - sesh.creatureSize / 2,
+      y: touch.y - sesh.creatureSize / 2,
     };
   }
 }
 
 function touchEnded() {
-  session.touchTarget = null;
+  sesh.touchTarget = null;
 }
