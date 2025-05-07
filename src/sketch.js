@@ -123,6 +123,22 @@ class CreatureSession {
     return this.creatures[i];
   }
 
+  nextActiveCreature() {
+    let i = getItem("activeCreatureIndex");
+    i = (i + 1) % this.creatures.length;
+    storeItem("activeCreatureIndex", i);
+  }
+
+  lastActiveCreature() {
+    let i = getItem("activeCreatureIndex");
+    if (i === 0) {
+      i = this.creatures.length - 1;
+    } else {
+      i = (i - 1) % this.creatures.length;
+    }
+    storeItem("activeCreatureIndex", i);
+  }
+
   // get activeCreatureIndex() {
   //   let i = getItem("activeCreatureIndex");
   //   if (i == null) {
@@ -388,7 +404,7 @@ function draw() {
       session.currentY -= 5;
     }
     if (session.currentY < session.touchTarget.y) {
-      session.currentX += 5;
+      session.currentY += 5;
     }
   }
   // if (touchTarget) {
@@ -447,22 +463,24 @@ function draw() {
 
 // switch between creatures using arrow keys
 function keyReleased() {
-  let i = getItem("activeCreatureIndex");
+  // let i = getItem("activeCreatureIndex");
 
   // toggle forwards
   if (key === "ArrowRight" || key === "ArrowUp") {
-    i = (i + 1) % CREATURES.size;
-    setActiveCreature(i);
+    session.nextActiveCreature();
+    // i = (i + 1) % CREATURES.size;
+    // setActiveCreature(i);
   }
 
   // toggle backwards
   if (key === "ArrowLeft" || key === "ArrowDown") {
-    if (i === 0) {
-      i = CREATURES.size - 1;
-    } else {
-      i = (i - 1) % CREATURES.size;
-    }
-    setActiveCreature(i);
+    session.lastActiveCreature();
+    // if (i === 0) {
+    //   i = CREATURES.size - 1;
+    // } else {
+    //   i = (i - 1) % CREATURES.size;
+    // }
+    // setActiveCreature(i);
   }
 }
 
@@ -500,9 +518,9 @@ function windowResized() {
 function touchStarted(event) {
   if (event.type === "touchstart") {
     for (let touch of touches) {
-      touchTarget = {
-        x: touch.x - CREATURE_SIZE / 2,
-        y: touch.y - CREATURE_SIZE / 2,
+      session.touchTarget = {
+        x: touch.x - session.creatureSize / 2,
+        y: touch.y - session.creatureSize / 2,
       };
     }
   }
@@ -510,13 +528,13 @@ function touchStarted(event) {
 
 function touchMoved() {
   for (let touch of touches) {
-    touchTarget = {
-      x: touch.x - CREATURE_SIZE / 2,
-      y: touch.y - CREATURE_SIZE / 2,
+    session.touchTarget = {
+      x: touch.x - session.creatureSize / 2,
+      y: touch.y - session.creatureSize / 2,
     };
   }
 }
 
 function touchEnded() {
-  touchTarget = null;
+  session.touchTarget = null;
 }

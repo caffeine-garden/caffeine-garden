@@ -21,6 +21,12 @@ stretch for now...
 
 - [windows95 icon pack](https://archive.org/details/windows-95-all-icons)
 - [responsive clamping in css](https://css-tricks.com/responsive-layouts-fewer-media-queries/#aa-control-when-the-items-wrap)
-- apparently [includes are a thing in html](https://www.cuit.columbia.edu/content/server-side-includes#:~:text=Server%2Dside%20includes%20are%20directives,modified%20of%20the%20current%20document) ?
+- apparently [includes are a thing in html](https://www.cuit.columbia.edu/content/server-side-includes) ?
 - and [viewports](https://css-tricks.com/the-notch-and-css/) [are](https://developer.mozilla.org/en-US/docs/Web/CSS/length#relative_length_units_based_on_viewport) [ambiguous](https://www.w3.org/TR/css-values-4/#large-viewport-size) :/
-  - ""[the ideal viewport doesn't exist](https://viewports.fyi/")""............whoopsie
+
+  - ["the ideal viewport doesn't exist"](https://viewports.fyi/")
+  - old, but [incredibly thorough mobile screen testing](https://tripleodeon.com/2011/12/first-understand-your-screen/):
+
+    > But when the viewport has not been constrained, and an HTML5 doctype (or none at all) is used, innerWidth will suddenly start to represent values much larger than the physical screen: and represent the width of the viewport canvas upon which the page has been rendered.
+
+    > On a portrait iPhone, for example, the default viewport is 980 pixels. On a landscape iPhone it is, well, according to window.innerWidth, 981 (yes, really).
