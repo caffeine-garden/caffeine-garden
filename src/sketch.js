@@ -36,7 +36,7 @@ class CreatureSession {
   #unscaledCreatureSize;
   #blink = 0; // for blinking animations
 
-  constructor(creatures, arrow, creatureSize = 100, screenBreakpoint = 500) {
+  constructor(creatures, arrow, creatureSize = 100, screenBreakpoint = 650) {
     this.creatures = creatures;
     this.arrow = arrow;
     this.#unscaledCreatureSize = creatureSize;
@@ -44,11 +44,38 @@ class CreatureSession {
     this.touchTarget = null; // for touchscreens
   }
 
+  #newCanvas() {
+    if (this.smallAxis) {
+      // mobile screens
+      // using screen.* improves the canvas on ios for some reason
+      // iphones also don't rotate screen values in landscape mode
+      // idk if this screws it up on android i should ask someone to test
+      // TODO ask the discord to test on android
+      // TODO why are dimensions weird on mobile?
+
+      // portrait mode
+      if (this.width < this.height) {
+        createCanvas(screen.width, screen.height);
+      }
+      // landscape mode
+      else {
+        if (window.navigator.platform == "iPhone") {
+          createCanvas(screen.height, screen.width);
+        } else {
+          createCanvas(screen.width, screen.height);
+        }
+      }
+    } else {
+      // desktop screens
+      createCanvas(this.width, this.height);
+    }
+  }
+
   // creates a p5 canvas and stores initial creature x,y positions in localStorage
   initialize() {
     console.log("initialized");
     const size = this.creatureSize;
-    createCanvas(this.width, this.height);
+    this.#newCanvas(this.width, this.height);
 
     // TODO change when #main-content is replaced with modals
     const mainContentTop = document
@@ -58,13 +85,13 @@ class CreatureSession {
     // position creatures closer to text on shorter screens (likely landscape mobile)
     const shortScreenMultiplier =
       this.height < this.screenBreakpoint
-        ? (this.#unscaledCreatureSize - size) * 0.01
+        ? (this.#unscaledCreatureSize - size) * 0.025
         : 0;
 
     let x = (this.width - size * this.creatures.length) / 2;
     let y = mainContentTop - size * (1.5 - shortScreenMultiplier);
 
-    // TODO update initial x,y in anticipation of many creatures
+    // TODO update initial x,y to handle many creatures
     this.creatures.forEach((creature) => {
       creature.x = x;
       creature.y = y;
@@ -77,7 +104,7 @@ class CreatureSession {
   // creates a p5 canvas and retrieves creature x,y positions from localStorage
   reinitialize() {
     console.log("reintialized");
-    createCanvas(this.width, this.height);
+    this.#newCanvas(this.width, this.height);
 
     this.creatures.forEach((creature) => {
       creature.x = getItem(creature.name + "X");
@@ -171,7 +198,7 @@ class CreatureSession {
   get creatureSize() {
     return this.smallAxis
       ? this.#unscaledCreatureSize -
-          0.2 * (this.screenBreakpoint - this.smallAxis)
+          0.1 * (this.screenBreakpoint - this.smallAxis)
       : this.#unscaledCreatureSize;
   }
 
@@ -271,9 +298,9 @@ function draw() {
     sesh.currentX = 0 - sesh.creatureSize;
   }
   if (sesh.currentY < 0 - sesh.creatureSize) {
-    sesh.currentY = sesh.width + sesh.creatureSize;
+    sesh.currentY = sesh.height + sesh.creatureSize;
   }
-  if (sesh.currentY > sesh.width + sesh.creatureSize) {
+  if (sesh.currentY > sesh.height + sesh.creatureSize) {
     sesh.currentY = 0 - sesh.creatureSize;
   }
 }
@@ -288,7 +315,7 @@ function keyReleased() {
   }
 }
 
-// reset creature position when window size changes
+// reset creature session when window size changes
 let timeout = false;
 function windowResized() {
   clearTimeout(timeout);
@@ -297,12 +324,6 @@ function windowResized() {
     localStorage.clear();
     setup();
   }, 250);
-  // resizeCanvas(windowWidth, windowHeight);
-  // noLoop();
-  // localStorage.clear();
-  // setup();
-  // loop();
-  // resizeCanvas(windowWidth, windowHeight);
 }
 
 /**
