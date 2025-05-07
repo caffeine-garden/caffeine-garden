@@ -151,7 +151,7 @@ class CreatureSession {
     storeItem("activeCreatureIndex", i);
   }
 
-  lastActiveCreature() {
+  prevActiveCreature() {
     let i = getItem("activeCreatureIndex");
     if (i === 0) {
       i = this.creatures.length - 1;
@@ -314,15 +314,15 @@ function keyReleased() {
     sesh.nextActiveCreature();
   }
   if (key === "ArrowLeft" || key === "ArrowDown") {
-    sesh.lastActiveCreature();
+    sesh.prevActiveCreature();
   }
 }
 
 // reset creature session when window size changes
-let timeout = false;
+let timeoutId;
 function windowResized() {
-  clearTimeout(timeout);
-  timeout = setTimeout(() => {
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(() => {
     localStorage.clear();
     setup();
   }, 250);
