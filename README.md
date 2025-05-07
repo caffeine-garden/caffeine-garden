@@ -2,7 +2,8 @@
 if you don't have contributor access then either (1) bother someone in the discord or (2) fork the repo, make changes, and make a PR like they do for open source... don't let the proprietary brainworms stop you (i did briefly forget that 2 was even an option)
 
 - [ ] change font (the current one can't handle special chars - selene recommended dot gothic)
-- [ ] refactor css to use grid positioning for z-axis 
+- [ ] refactor css to use grid positioning for z-axis
+- [ ] update meta tags to include preview, icon, etc
 - [x] fix low res svgs on mobile
 - [x] fix weird formatting on mobile
 - [x] replace text navigation with icons
