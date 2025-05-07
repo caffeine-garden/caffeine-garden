@@ -6,23 +6,26 @@
  * 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼
  *
  *    let's say you want to add a worm.
- *    there are three steps:
+ *    you need to create your worm svg (a 32x32 square image,
+ *    but please export it as at least 1000 pixels)
+ *    and add your worm svg to the assets folder.
  *
- * 1. define your worm above "let activeCreature;"
+ *    then follow these two steps:
  *
- *    eg:
- *        let worm; // your_name
- *
- * 2. load your worm image above "arrow = loadImage("/assets/arrow.svg");"
+ * 1. define your worm in function preload()
  *    please make sure worm.svg exists in the assets folder.
  *
  *    eg:
- *        worm = loadImage("/assets/worm.svg");
+ *        const worm = newCreature("/assets/worm.svg", "worm", "your_name");
  *
- * 3. add your worm to CREATURES in the setup() function
+ * 2. add your worm to the CreatureSession, also in function preload()
+ *    basically edit the line starting with "sesh = new CreatureSession"
+ *    to include your worm at the end of the list of creatures
  *
  *    eg:
- *        CREATURES.set("worm", worm);
+ *        sesh = new CreatureSession([panda, bunny, jellyfish, frog, worm], arrow);
+ *
+ *    reach out in the discord with any questions!
  *
  * 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧
  * 𖡼.𖤣𖥧𖡼 AND THAT'S ALL 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.
@@ -31,111 +34,219 @@
  * 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧
  */
 
-let panda; // selene
-let bunny; // lucy
-let jellyfish; // julie
-let frog; // yen
-/** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 1: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
-let activeCreature;
-const CREATURES = new Map();
-let CREATURE_SIZE = 100;
-const ARROW_SIZE = CREATURE_SIZE / 4;
-const SMALL_SCREEN_BREAKPOINT = 500;
-let blink = 0; // for arrow blinking
-let touchTarget = null; // for touchscreens
+/**
+ * stores creature and canvas data for a given user sesh
+ * @param {p5.Image[]} creatures - an array of p5.Images
+ */
+class CreatureSession {
+  #unscaledCreatureSize;
+  #blink = 0; // for blinking animations
 
-function preload() {
-  panda = loadImage("/assets/panda.svg");
-  bunny = loadImage("/assets/bunny.svg");
-  jellyfish = loadImage("/assets/jellyfish.svg");
-  frog = loadImage("/assets/frog.svg");
-  /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 2: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
-  arrow = loadImage("/assets/arrow.svg");
-}
-
-function setup() {
-  // smallAxis is the size of the smaller axis if the screen is small, else null
-  const smallAxis =
-    windowWidth < SMALL_SCREEN_BREAKPOINT ||
-    windowHeight < SMALL_SCREEN_BREAKPOINT
-      ? Math.min(windowWidth, windowHeight)
-      : null;
-
-  if (smallAxis) {
-    if (windowWidth < windowHeight) {
-      // using displayWidth / displayHeight mostly fixes mobile weirdness...
-      createCanvas(displayWidth, displayHeight); // portrait mode
-    } else {
-      createCanvas(displayHeight, displayWidth); // landscape mode
-    }
-  } else {
-    createCanvas(windowWidth, windowHeight);
+  constructor(creatures, arrow, creatureSize = 100, screenBreakpoint = 650) {
+    this.creatures = creatures;
+    this.arrow = arrow;
+    this.#unscaledCreatureSize = creatureSize;
+    this.screenBreakpoint = screenBreakpoint;
+    this.touchTarget = null; // for touchscreens
   }
 
-  CREATURES.set("panda", panda);
-  CREATURES.set("bunny", bunny);
-  CREATURES.set("jellyfish", jellyfish);
-  CREATURES.set("frog", frog);
-  /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 3: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
+  #newCanvas() {
+    if (this.smallAxis) {
+      // mobile screens
+      // using screen.* improves the canvas on ios for some reason
+      // iphones also don't rotate screen values in landscape mode
+      // idk if this screws it up on android i should ask someone to test
+      // TODO ask the discord to test on android
+      // TODO why are dimensions weird on mobile?
 
-  let firstTime = localStorage.getItem("firstTime");
-  if (!firstTime) {
-    // first time loaded! initialize creature coordinates.
-    // otherwise, get coordinates from localStorage
-    localStorage.setItem("firstTime", "1");
+      // portrait mode
+      if (this.width < this.height) {
+        createCanvas(screen.width, screen.height);
+      }
+      // landscape mode
+      else {
+        if (window.navigator.platform == "iPhone") {
+          createCanvas(screen.height, screen.width);
+        } else {
+          createCanvas(screen.width, screen.height);
+        }
+      }
+    } else {
+      // desktop screens
+      createCanvas(this.width, this.height);
+    }
+  }
 
-    // if screen is small, resize creatures and position accordingly
-    CREATURE_SIZE = smallAxis
-      ? CREATURE_SIZE - 0.2 * (SMALL_SCREEN_BREAKPOINT - smallAxis)
-      : CREATURE_SIZE;
+  // creates a p5 canvas and stores initial creature x,y positions in localStorage
+  initialize() {
+    const size = this.creatureSize;
+    this.#newCanvas(this.width, this.height);
 
-    // TODO: HANDLE POSITIONING IN ANTICIPATION OF 10+ CREATURES
-    let x = (windowWidth - CREATURE_SIZE * CREATURES.size) / 2;
-
-    // position creatures closer to text on shorter screens (likely landscape mobile)
-    const shortScreenMultiplier =
-      windowHeight < SMALL_SCREEN_BREAKPOINT ? (100 - CREATURE_SIZE) * 0.01 : 0;
-
+    // TODO change when #main-content is replaced with modals
     const mainContentTop = document
       .querySelector("#main-content")
       .getBoundingClientRect().top;
 
-    let y = mainContentTop - CREATURE_SIZE * (1.5 - shortScreenMultiplier);
+    // position creatures closer to text on shorter screens (likely landscape mobile)
+    const shortScreenMultiplier =
+      this.height < this.screenBreakpoint
+        ? (this.#unscaledCreatureSize - size) * 0.025
+        : 0;
 
-    // store creature starting coordinates in localStorage
-    CREATURES.forEach((_, creatureName) => {
-      storeItem(creatureName + "X", x);
-      storeItem(creatureName + "Y", y);
-      x += CREATURE_SIZE;
+    let x = (this.width - size * this.creatures.length) / 2;
+    let y = mainContentTop - size * (1.5 - shortScreenMultiplier);
+
+    // TODO update initial x,y to handle many creatures
+    this.creatures.forEach((creature) => {
+      creature.x = x;
+      creature.y = y;
+      storeItem(creature.name + "X", x);
+      storeItem(creature.name + "Y", y);
+      x += size;
+    });
+  }
+
+  // creates a p5 canvas and retrieves creature x,y positions from localStorage
+  reinitialize() {
+    this.#newCanvas(this.width, this.height);
+
+    this.creatures.forEach((creature) => {
+      creature.x = getItem(creature.name + "X");
+      creature.y = getItem(creature.name + "Y");
+    });
+  }
+
+  drawCreatures() {
+    const size = this.creatureSize;
+
+    this.creatures.forEach((creature) => {
+      image(creature, creature.x, creature.y, size, size);
     });
 
-    // the intial active creature is at index 0
-    storeItem("activeCreatureIndex", 0);
+    // draw blinking arrow to highlight the active creature
+    this.#blink++;
+    if (this.#blink % 50 > 10) {
+      image(
+        this.arrow,
+        this.#activeCreature.x + (size - this.arrowSize) / 2,
+        this.#activeCreature.y - this.arrowSize * 1.5,
+        this.arrowSize,
+        this.arrowSize
+      );
+    }
+  }
+
+  get #activeCreature() {
+    let i = getItem("activeCreatureIndex");
+    if (i == null) {
+      i = 0;
+      storeItem("activeCreatureIndex", i);
+    }
+    return this.creatures[i];
+  }
+
+  nextActiveCreature() {
+    let i = getItem("activeCreatureIndex");
+    i = (i + 1) % this.creatures.length;
+    storeItem("activeCreatureIndex", i);
+  }
+
+  prevActiveCreature() {
+    let i = getItem("activeCreatureIndex");
+    if (i === 0) {
+      i = this.creatures.length - 1;
+    } else {
+      i = (i - 1) % this.creatures.length;
+    }
+    storeItem("activeCreatureIndex", i);
+  }
+
+  get width() {
+    return document.documentElement.clientWidth;
+  }
+
+  get height() {
+    return document.documentElement.clientHeight;
+  }
+
+  get currentX() {
+    return this.#activeCreature.x;
+  }
+
+  set currentX(x) {
+    this.#activeCreature.x = x;
+    storeItem(this.#activeCreature.name + "X", x);
+  }
+
+  get currentY() {
+    return this.#activeCreature.y;
+  }
+
+  set currentY(y) {
+    this.#activeCreature.y = y;
+    storeItem(this.#activeCreature.name + "Y", y);
+  }
+
+  // smallAxis is the size of the axis that is smaller than screenBreakpoint
+  // if multiple exist, it returns the smaller axis
+  // if none exist, it returns null
+  get smallAxis() {
+    return this.width < this.screenBreakpoint ||
+      this.height < this.screenBreakpoint
+      ? Math.min(this.width, this.height)
+      : null;
+  }
+
+  // if screen is small, resize creatures and position accordingly
+  get creatureSize() {
+    return this.smallAxis
+      ? this.#unscaledCreatureSize -
+          0.1 * (this.screenBreakpoint - this.smallAxis)
+      : this.#unscaledCreatureSize;
+  }
+
+  get arrowSize() {
+    return this.creatureSize / 4;
   }
 }
 
-// returns the p5 image for the current active creature by inspecting localStorage
-// also returns the name of the current active creature
-// should not be called prior to storing activeCreatureIndex in setup()
-function getActiveCreature() {
-  let activeCreatureIndex = getItem("activeCreatureIndex");
-  if (!activeCreatureIndex) {
-    storeItem("activeCreatureIndex", 0);
-    activeCreatureIndex = 0;
-  }
-  const activeCreatureName = [...CREATURES.keys()][activeCreatureIndex];
-  activeCreature = CREATURES.get(activeCreatureName);
-  return activeCreature, activeCreatureName;
+/**
+ * creates a p5.Image object and attaches creature metadata
+ *
+ * TODO collect more member info and attach here
+ *
+ * @returns {p5.Image}
+ */
+const newCreature = (path, name, humanName) => {
+  const img = loadImage(path);
+  img.name = name;
+  img.humanName = humanName;
+  return img;
+};
+
+let sesh;
+function preload() {
+  const arrow = loadImage("/assets/arrow.svg");
+  const panda = newCreature("/assets/panda.svg", "panda", "selene");
+  const bunny = newCreature("/assets/bunny.svg", "bunny", "lucy");
+  const jellyfish = newCreature("/assets/jellyfish.svg", "jellyfish", "julie");
+  const frog = newCreature("/assets/frog.svg", "frog", "yen");
+  /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 1: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
+
+  sesh = new CreatureSession([panda, bunny, jellyfish, frog], arrow);
+  /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 2: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
 }
 
-function setActiveCreature(activeCreatureIndex) {
-  if (activeCreatureIndex == null) {
-    throw new Error("Please specify an activeCreatureIndex!!!");
+function setup() {
+  let previouslyLoaded = localStorage.getItem("previouslyLoaded");
+  if (!previouslyLoaded) {
+    // first time loaded! initialize creature coordinates.
+    localStorage.setItem("previouslyLoaded", "1");
+    sesh.initialize();
+  } else {
+    // get creature coordinates from localStorage
+    sesh.reinitialize();
   }
-  storeItem("activeCreatureIndex", activeCreatureIndex);
-  const activeCreatureName = [...CREATURES.keys()][activeCreatureIndex];
-  activeCreature = CREATURES.get(activeCreatureName);
-  return activeCreature;
 }
 
 function draw() {
@@ -144,124 +255,77 @@ function draw() {
   stroke("#083005");
 
   // draw creatures
-  CREATURES.forEach((creature, creatureName) => {
-    if (getItem(creatureName + "X") == null) {
-      setup();
-    }
+  sesh.drawCreatures();
 
-    image(
-      creature,
-      getItem(creatureName + "X"),
-      getItem(creatureName + "Y"),
-      CREATURE_SIZE,
-      CREATURE_SIZE
-    );
-  });
-
-  activeCreature, (activeCreatureName = getActiveCreature());
-  activeCreature.x = getItem(activeCreatureName + "X");
-  activeCreature.y = getItem(activeCreatureName + "Y");
-
-  // draw blinking arrow to highlight the active creature
-  blink++;
-  if (blink % 50 > 10) {
-    image(
-      arrow,
-      activeCreature.x + (CREATURE_SIZE - ARROW_SIZE) / 2,
-      activeCreature.y - ARROW_SIZE * 1.5,
-      ARROW_SIZE,
-      ARROW_SIZE
-    );
-  }
-
-  const speed = keyIsDown(16) ? 10 : 5;
   // move the active creature with WASD
+  // use spacebar for 2x speed
+  const speed = keyIsDown(16) ? 10 : 5;
   if (keyIsDown(65) === true) {
     // A key; go left
-    activeCreature.x -= speed;
-    storeItem(activeCreatureName + "X", activeCreature.x);
+    sesh.currentX -= speed;
   }
   if (keyIsDown(68) === true) {
     // D key; go right
-    activeCreature.x += speed;
-    storeItem(activeCreatureName + "X", activeCreature.x);
+    sesh.currentX += speed;
   }
   if (keyIsDown(87) === true) {
     // W key; go up
-    activeCreature.y -= speed;
-    storeItem(activeCreatureName + "Y", activeCreature.y);
+    sesh.currentY -= speed;
   }
   if (keyIsDown(83) === true) {
     // S key; go down
-    activeCreature.y += speed;
-    storeItem(activeCreatureName + "Y", activeCreature.y);
+    sesh.currentY += speed;
   }
 
   // move the active creature by tapping a touchscreen
-  if (touchTarget) {
-    if (activeCreature.x > touchTarget.x) {
-      activeCreature.x -= 5;
-      storeItem(activeCreatureName + "X", activeCreature.x);
+  if (sesh.touchTarget) {
+    if (sesh.currentX > sesh.touchTarget.x) {
+      sesh.currentX -= 5;
     }
-    if (activeCreature.x < touchTarget.x) {
-      activeCreature.x += 5;
-      storeItem(activeCreatureName + "X", activeCreature.x);
+    if (sesh.currentX < sesh.touchTarget.x) {
+      sesh.currentX += 5;
     }
-    if (activeCreature.y > touchTarget.y) {
-      activeCreature.y -= 5;
-      storeItem(activeCreatureName + "Y", activeCreature.y);
+    if (sesh.currentY > sesh.touchTarget.y) {
+      sesh.currentY -= 5;
     }
-    if (activeCreature.y < touchTarget.y) {
-      activeCreature.y += 5;
-      storeItem(activeCreatureName + "Y", activeCreature.y);
+    if (sesh.currentY < sesh.touchTarget.y) {
+      sesh.currentY += 5;
     }
   }
 
   // keep creatures within the bounds of the screen
-  if (activeCreature.x < 0 - CREATURE_SIZE) {
-    activeCreature.x = windowWidth + CREATURE_SIZE;
-    storeItem(activeCreatureName + "X", activeCreature.x);
+  if (sesh.currentX < 0 - sesh.creatureSize) {
+    sesh.currentX = sesh.width + sesh.creatureSize;
   }
-  if (activeCreature.x > windowWidth + CREATURE_SIZE) {
-    activeCreature.x = 0 - CREATURE_SIZE;
-    storeItem(activeCreatureName + "X", activeCreature.x);
+  if (sesh.currentX > sesh.width + sesh.creatureSize) {
+    sesh.currentX = 0 - sesh.creatureSize;
   }
-  if (activeCreature.y < 0 - CREATURE_SIZE) {
-    activeCreature.y = windowHeight + CREATURE_SIZE;
-    storeItem(activeCreatureName + "Y", activeCreature.y);
+  if (sesh.currentY < 0 - sesh.creatureSize) {
+    sesh.currentY = sesh.height + sesh.creatureSize;
   }
-  if (activeCreature.y > windowHeight + CREATURE_SIZE) {
-    activeCreature.y = 0 - CREATURE_SIZE;
-    storeItem(activeCreatureName + "Y", activeCreature.y);
+  if (sesh.currentY > sesh.height + sesh.creatureSize) {
+    sesh.currentY = 0 - sesh.creatureSize;
   }
 }
 
 // switch between creatures using arrow keys
 function keyReleased() {
-  let i = getItem("activeCreatureIndex");
-
-  // toggle forwards
   if (key === "ArrowRight" || key === "ArrowUp") {
-    i = (i + 1) % CREATURES.size;
-    setActiveCreature(i);
+    sesh.nextActiveCreature();
   }
-
-  // toggle backwards
   if (key === "ArrowLeft" || key === "ArrowDown") {
-    if (i === 0) {
-      i = CREATURES.size - 1;
-    } else {
-      i = (i - 1) % CREATURES.size;
-    }
-    setActiveCreature(i);
+    sesh.prevActiveCreature();
   }
 }
 
-// reset creature position when window size changes
+// reset creature session when window size changes
+let timeoutId;
 function windowResized() {
-  localStorage.clear();
-  setup();
-  resizeCanvas(windowWidth, windowHeight);
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(() => {
+    localStorage.clear();
+    setup();
+  }, 250);
 }
 
 /**
@@ -271,9 +335,9 @@ function windowResized() {
 function touchStarted(event) {
   if (event.type === "touchstart") {
     for (let touch of touches) {
-      touchTarget = {
-        x: touch.x - CREATURE_SIZE / 2,
-        y: touch.y - CREATURE_SIZE / 2,
+      sesh.touchTarget = {
+        x: touch.x - sesh.creatureSize / 2,
+        y: touch.y - sesh.creatureSize / 2,
       };
     }
   }
@@ -281,13 +345,13 @@ function touchStarted(event) {
 
 function touchMoved() {
   for (let touch of touches) {
-    touchTarget = {
-      x: touch.x - CREATURE_SIZE / 2,
-      y: touch.y - CREATURE_SIZE / 2,
+    sesh.touchTarget = {
+      x: touch.x - sesh.creatureSize / 2,
+      y: touch.y - sesh.creatureSize / 2,
     };
   }
 }
 
 function touchEnded() {
-  touchTarget = null;
+  sesh.touchTarget = null;
 }
