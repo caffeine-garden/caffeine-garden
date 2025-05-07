@@ -6,23 +6,20 @@
  * 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼
  *
  *    let's say you want to add a worm.
- *    there are three steps:
+ *    there are only two steps:
  *
- * 1. define your worm above "let activeCreature;"
- *
- *    eg:
- *        let worm; // your_name
- *
- * 2. load your worm image above "arrow = loadImage("/assets/arrow.svg");"
+ * 1. create your worm in function preload()
  *    please make sure worm.svg exists in the assets folder.
  *
  *    eg:
- *        worm = loadImage("/assets/worm.svg");
+ *        const worm = newCreature("/assets/worm.svg", "worm", "your_name");
  *
- * 3. add your worm to CREATURES in the setup() function
+ * 2. add your worm to the CreatureSession, also in function preload()
+ *    basically edit the line starting with "session = new CreatureSession"
+ *    to include your worm at the end of the list of creatures
  *
  *    eg:
- *        CREATURES.set("worm", worm);
+ *        session = new CreatureSession([panda, bunny, jellyfish, frog, worm], arrow);
  *
  * 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧
  * 𖡼.𖤣𖥧𖡼 AND THAT'S ALL 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.
@@ -31,24 +28,8 @@
  * 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧
  */
 
-let session;
-
 /**
-const CREATURES = new Map();
-let CREATURE_SIZE;
-const SMALL_SCREEN_BREAKPOINT = 500;
-let blink = 0; // for arrow blinking
-let touchTarget = null; // for touchscreens
-let panda; // selene
-let bunny; // lucy
-let jellyfish; // julie
-let frog; // yen
-*/
-
-/** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 1: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
-
-/**
- * stores creature x,y positions, the active creature, and related canvas/animation info
+ * stores creature and canvas data for a given user session
  * @param {p5.Image[]} creatures - an array of p5.Images
  */
 class CreatureSession {
@@ -139,21 +120,6 @@ class CreatureSession {
     storeItem("activeCreatureIndex", i);
   }
 
-  // get activeCreatureIndex() {
-  //   let i = getItem("activeCreatureIndex");
-  //   if (i == null) {
-  //     i = 0;
-  //     storeItem("activeCreatureIndex", i);
-  //   }
-  //   this.activeCreature = this.creatures[i];
-  //   return i;
-  // }
-
-  // set activeCreatureIndex(i) {
-  //   storeItem("activeCreatureIndex", i);
-  //   this.activeCreature = this.creatures[i];
-  // }
-
   get width() {
     return document.documentElement.clientWidth;
   }
@@ -210,120 +176,35 @@ class CreatureSession {
  *
  * @returns {p5.Image}
  */
-const newCreatureImage = (path, name, humanName) => {
+const newCreature = (path, name, humanName) => {
   const img = loadImage(path);
   img.name = name;
   img.humanName = humanName;
   return img;
 };
 
+let session;
 function preload() {
   const arrow = loadImage("/assets/arrow.svg");
-  const panda = newCreatureImage("/assets/panda.svg", "panda", "selene");
-  const bunny = newCreatureImage("/assets/bunny.svg", "bunny", "lucy");
-  const jellyfish = newCreatureImage(
-    "/assets/jellyfish.svg",
-    "jellyfish",
-    "julie"
-  );
-  const frog = newCreatureImage("/assets/frog.svg", "frog", "yen");
-  /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 2: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
+  const panda = newCreature("/assets/panda.svg", "panda", "selene");
+  const bunny = newCreature("/assets/bunny.svg", "bunny", "lucy");
+  const jellyfish = newCreature("/assets/jellyfish.svg", "jellyfish", "julie");
+  const frog = newCreature("/assets/frog.svg", "frog", "yen");
+  /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 1: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
 
   session = new CreatureSession([panda, bunny, jellyfish, frog], arrow);
+  /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 2: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
 }
 
 function setup() {
-  // smallAxis is the size of the smaller axis if the screen is small, else null
-  // const smallAxis =
-  //   document.documentElement.clientWidth < SMALL_SCREEN_BREAKPOINT ||
-  //   document.documentElement.clientHeight < SMALL_SCREEN_BREAKPOINT
-  //     ? Math.min(
-  //         document.documentElement.clientWidth,
-  //         document.documentElement.clientHeight
-  //       )
-  //     : null;
-
-  // if (smallAxis) {
-  //   if (windowWidth < windowHeight) {
-  //     // using displayWidth / displayHeight mostly fixes mobile weirdness...
-  //     createCanvas(displayWidth, displayHeight); // portrait mode
-  //   } else {
-  //     createCanvas(displayHeight, displayWidth); // landscape mode
-  //   }
-  // } else {
-  //   createCanvas(windowWidth, windowHeight);
-  // }
-
-  // CREATURES.set("panda", panda);
-  // CREATURES.set("bunny", bunny);
-  // CREATURES.set("jellyfish", jellyfish);
-  // CREATURES.set("frog", frog);
-  /** 𖡼.𖤣𖥧𖡼.𖤣𖥧 STEP 3: ADD CREATURE ABOVE THIS COMMENT 𖡼.𖤣𖥧𖡼.𖤣𖥧 */
-
   let previouslyLoaded = localStorage.getItem("previouslyLoaded");
   if (!previouslyLoaded) {
     // first time loaded! initialize creature coordinates.
     // otherwise, get coordinates from localStorage
     localStorage.setItem("previouslyLoaded", "1");
     session.initialize();
-
-    // if screen is small, resize creatures and position accordingly
-    // CREATURE_SIZE = smallAxis
-    //   ? 100 - 0.2 * (SMALL_SCREEN_BREAKPOINT - smallAxis)
-    //   : 100;
-
-    // TODO: HANDLE POSITIONING IN ANTICIPATION OF 10+ CREATURES
-    // let x =
-    //   (document.documentElement.clientWidth - CREATURE_SIZE * CREATURES.size) /
-    //   2;
-
-    // position creatures closer to text on shorter screens (likely landscape mobile)
-    // const shortScreenMultiplier =
-    //   document.documentElement.clientHeight < SMALL_SCREEN_BREAKPOINT
-    //     ? (100 - CREATURE_SIZE) * 0.01
-    //     : 0;
-
-    // const mainContentTop = document
-    //   .querySelector("#main-content")
-    //   .getBoundingClientRect().top;
-
-    // let y = mainContentTop - CREATURE_SIZE * (1.5 - shortScreenMultiplier);
-
-    // store creature starting coordinates in localStorage
-    // CREATURES.forEach((_, creatureName) => {
-    //   storeItem(creatureName + "X", x);
-    //   storeItem(creatureName + "Y", y);
-    //   x += CREATURE_SIZE;
-    // });
-
-    // the intial active creature is at index 0
-    // storeItem("activeCreatureIndex", 0);
   }
 }
-
-// returns the p5 image for the current active creature by inspecting localStorage
-// also returns the name of the current active creature
-// should not be called prior to storing activeCreatureIndex in setup()
-// function getActiveCreature() {
-//   let activeCreatureIndex = getItem("activeCreatureIndex");
-//   if (!activeCreatureIndex) {
-//     storeItem("activeCreatureIndex", 0);
-//     activeCreatureIndex = 0;
-//   }
-//   const activeCreatureName = [...CREATURES.keys()][activeCreatureIndex];
-//   activeCreature = CREATURES.get(activeCreatureName);
-//   return activeCreature, activeCreatureName;
-// }
-
-// function setActiveCreature(activeCreatureIndex) {
-//   if (activeCreatureIndex == null) {
-//     throw new Error("Please specify an activeCreatureIndex!!!");
-//   }
-//   storeItem("activeCreatureIndex", activeCreatureIndex);
-//   const activeCreatureName = [...CREATURES.keys()][activeCreatureIndex];
-//   activeCreature = CREATURES.get(activeCreatureName);
-//   return activeCreature;
-// }
 
 function draw() {
   background("#9CEB7D");
@@ -333,62 +214,23 @@ function draw() {
   // draw creatures
   session.drawCreatures();
 
-  // CREATURES.forEach((creature, creatureName) => {
-  //   if (getItem(creatureName + "X") == null) {
-  //     setup();
-  //   }
-
-  //   image(
-  //     creature,
-  //     getItem(creatureName + "X"),
-  //     getItem(creatureName + "Y"),
-  //     CREATURE_SIZE,
-  //     CREATURE_SIZE
-  //   );
-  // });
-
-  // activeCreature, (activeCreatureName = getActiveCreature());
-  // activeCreature.x = getItem(activeCreatureName + "X");
-  // activeCreature.y = getItem(activeCreatureName + "Y");
-
-  // draw blinking arrow to highlight the active creature
-  // blink++;
-  // const ARROW_SIZE = CREATURE_SIZE / 4;
-  // if (blink % 50 > 10) {
-  //   image(
-  //     arrow,
-  //     activeCreature.x + (CREATURE_SIZE - ARROW_SIZE) / 2,
-  //     activeCreature.y - ARROW_SIZE * 1.5,
-  //     ARROW_SIZE,
-  //     ARROW_SIZE
-  //   );
-  // }
-
   // move the active creature with WASD
   // use spacebar for 2x speed
   const speed = keyIsDown(16) ? 10 : 5;
   if (keyIsDown(65) === true) {
     // A key; go left
-    // activeCreature.x -= speed;
-    // storeItem(activeCreatureName + "X", activeCreature.x);
     session.currentX -= speed;
   }
   if (keyIsDown(68) === true) {
     // D key; go right
-    // activeCreature.x += speed;
-    // storeItem(activeCreatureName + "X", activeCreature.x);
     session.currentX += speed;
   }
   if (keyIsDown(87) === true) {
     // W key; go up
-    // activeCreature.y -= speed;
-    // storeItem(activeCreatureName + "Y", activeCreature.y);
     session.currentY -= speed;
   }
   if (keyIsDown(83) === true) {
     // S key; go down
-    // activeCreature.y += speed;
-    // storeItem(activeCreatureName + "Y", activeCreature.y);
     session.currentY += speed;
   }
 
@@ -407,24 +249,6 @@ function draw() {
       session.currentY += 5;
     }
   }
-  // if (touchTarget) {
-  //   if (activeCreature.x > touchTarget.x) {
-  //     activeCreature.x -= 5;
-  //     storeItem(activeCreatureName + "X", activeCreature.x);
-  //   }
-  //   if (activeCreature.x < touchTarget.x) {
-  //     activeCreature.x += 5;
-  //     storeItem(activeCreatureName + "X", activeCreature.x);
-  //   }
-  //   if (activeCreature.y > touchTarget.y) {
-  //     activeCreature.y -= 5;
-  //     storeItem(activeCreatureName + "Y", activeCreature.y);
-  //   }
-  //   if (activeCreature.y < touchTarget.y) {
-  //     activeCreature.y += 5;
-  //     storeItem(activeCreatureName + "Y", activeCreature.y);
-  //   }
-  // }
 
   // keep creatures within the bounds of the screen
   if (session.currentX < 0 - session.creatureSize) {
@@ -439,48 +263,15 @@ function draw() {
   if (session.currentY > session.width + session.creatureSize) {
     session.currentY = 0 - session.creatureSize;
   }
-
-  // if (activeCreature.x < 0 - CREATURE_SIZE) {
-  //   activeCreature.x = document.documentElement.clientWidth + CREATURE_SIZE;
-  //   storeItem(activeCreatureName + "X", activeCreature.x);
-  // }
-  // if (activeCreature.x > document.documentElement.clientWidth + CREATURE_SIZE) {
-  //   activeCreature.x = 0 - CREATURE_SIZE;
-  //   storeItem(activeCreatureName + "X", activeCreature.x);
-  // }
-  // if (activeCreature.y < 0 - CREATURE_SIZE) {
-  //   activeCreature.y = document.documentElement.clientHeight + CREATURE_SIZE;
-  //   storeItem(activeCreatureName + "Y", activeCreature.y);
-  // }
-  // if (
-  //   activeCreature.y >
-  //   document.documentElement.clientHeight + CREATURE_SIZE
-  // ) {
-  //   activeCreature.y = 0 - CREATURE_SIZE;
-  //   storeItem(activeCreatureName + "Y", activeCreature.y);
-  // }
 }
 
 // switch between creatures using arrow keys
 function keyReleased() {
-  // let i = getItem("activeCreatureIndex");
-
-  // toggle forwards
   if (key === "ArrowRight" || key === "ArrowUp") {
     session.nextActiveCreature();
-    // i = (i + 1) % CREATURES.size;
-    // setActiveCreature(i);
   }
-
-  // toggle backwards
   if (key === "ArrowLeft" || key === "ArrowDown") {
     session.lastActiveCreature();
-    // if (i === 0) {
-    //   i = CREATURES.size - 1;
-    // } else {
-    //   i = (i - 1) % CREATURES.size;
-    // }
-    // setActiveCreature(i);
   }
 }
 
@@ -489,20 +280,10 @@ let timeout = false;
 function windowResized() {
   clearTimeout(timeout);
   timeout = setTimeout(() => {
-    console.log(
-      "resize! window",
-      document.documentElement.clientWidth,
-      document.documentElement.clientHeight
-    );
+    console.log("resize!", session.width, session.height);
     localStorage.clear();
     setup();
-    // resizeCanvas(
-    //   document.documentElement.clientWidth,
-    //   document.documentElement.clientHeight
-    // );
   }, 250);
-  // console.log("window", windowWidth, windowHeight);
-  // console.log("display", displayWidth, displayHeight);
   // resizeCanvas(windowWidth, windowHeight);
   // noLoop();
   // localStorage.clear();
