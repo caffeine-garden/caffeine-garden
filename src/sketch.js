@@ -6,9 +6,13 @@
  * 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼
  *
  *    let's say you want to add a worm.
- *    there are only two steps:
+ *    you need to create your worm svg (a 32x32 square image,
+ *    but please export it as at least 1000 pixels)
+ *    and add your worm svg to the assets folder.
  *
- * 1. create your worm in function preload()
+ *    then follow these two steps:
+ *
+ * 1. define your worm in function preload()
  *    please make sure worm.svg exists in the assets folder.
  *
  *    eg:
@@ -20,6 +24,8 @@
  *
  *    eg:
  *        sesh = new CreatureSession([panda, bunny, jellyfish, frog, worm], arrow);
+ *
+ *    reach out in the discord with any questions!
  *
  * 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧
  * 𖡼.𖤣𖥧𖡼 AND THAT'S ALL 𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.𖤣𖥧𖡼.
@@ -73,7 +79,6 @@ class CreatureSession {
 
   // creates a p5 canvas and stores initial creature x,y positions in localStorage
   initialize() {
-    console.log("initialized");
     const size = this.creatureSize;
     this.#newCanvas(this.width, this.height);
 
@@ -103,7 +108,6 @@ class CreatureSession {
 
   // creates a p5 canvas and retrieves creature x,y positions from localStorage
   reinitialize() {
-    console.log("reintialized");
     this.#newCanvas(this.width, this.height);
 
     this.creatures.forEach((creature) => {
@@ -113,7 +117,6 @@ class CreatureSession {
   }
 
   drawCreatures() {
-    console.log("drawing");
     const size = this.creatureSize;
 
     this.creatures.forEach((creature) => {
@@ -320,7 +323,6 @@ let timeout = false;
 function windowResized() {
   clearTimeout(timeout);
   timeout = setTimeout(() => {
-    console.log("resize!", sesh.width, sesh.height);
     localStorage.clear();
     setup();
   }, 250);
