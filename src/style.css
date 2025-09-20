@@ -124,6 +124,21 @@ figcaption {
   border-radius: 30%;
 }
 
+.caption {
+  font-size: large;
+  background-color: var(--accent-color);
+  border: hidden;
+  border-radius: 30%;
+}
+
+.textlink:hover {
+  filter: hue-rotate(-130deg) sepia(0.3);
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px dashed var(--accent-color);
+  border-radius: 50%;
+  transition-duration: 0.3s;
+}
+
 main {
   z-index: 0;
   position: absolute;
