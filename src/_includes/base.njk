@@ -16,9 +16,15 @@
   <body>
     <nav>
       <ul>
-        <li><a href="/about">
+        <li><a href="/">
           <figure>
             <img class="icon" src="../assets/tree.ico" alt="a tree" />
+            <figcaption>home</figcaption>
+          </figure>
+        </a></li>
+        <li><a href="/about">
+          <figure>
+            <img class="icon" src="../assets/book_icon.png" alt="a book" />
             <figcaption>about</figcaption>
           </figure>
         </a></li>
@@ -48,9 +54,9 @@
           {{ content | safe }}
       </div>
     </main>
-      <marquee behavior="alternate" style="position:fixed;top:2rem;left:0px;width:100%;">
+      <marquee id="watering-can-construction" behavior="alternate" style="position:fixed;left:0px;width:100%;">
         <img style="display:block;filter:hue-rotate(30deg);margin-left:15px;" width="100" src="../assets/watering_can.gif" alt="neon water flowing from a watering can" />
-        <img style="display:block;filter:hue-rotate(60deg);" width="150" src="../assets/construction17.gif" alt="a neon under construction sign" />
+        <img style="display:block;filter:hue-rotate(60deg);" width="140" src="../assets/construction17.gif" alt="a neon under construction sign" />
       </marquee>
       <marquee direction="right" scrollamount="3" style="position:fixed;top:80%;left:0px;width:100%;">
         <img src="../assets/construction2.gif" alt="a construction vehicle" />

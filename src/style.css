@@ -161,3 +161,15 @@ a:hover {
 p {
   margin: 2vh auto;
 }
+
+#watering-can-construction {
+  z-index: 0;
+  top: 2rem;
+
+  /* we can't use css variables in media queries (i think) */
+  @media (max-width: 650px) {
+    top: 57%;
+  }
+}
+
+}

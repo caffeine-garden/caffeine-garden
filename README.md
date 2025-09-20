@@ -1,3 +1,14 @@
+## getting started
+right now (september 2025) this repo is using 11ty/eleventy. we may change this at some point.
+
+to get the website running locally, run
+```
+npx @11ty/eleventy --serve
+```
+it will automatically update when you make and save changes.
+
+11ty reads code from the `src` folder and writes to the `_site` folder.  i.e. edits should only be made in the `src` folder.
+
 ## hi pls feel free to contribute anything (it does not have to be on this list)
 if you don't have contributor access then either (1) bother someone in the discord or (2) fork the repo, make changes, and make a PR like they do for open source... don't let the proprietary brainworms stop you (i did briefly forget that 2 was even an option)
 
